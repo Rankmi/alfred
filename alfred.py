@@ -9,9 +9,9 @@ from configparser import ConfigParser
 parser = ConfigParser()
 parser.read('alfred.conf')
 
-AUTHUSER=parser.get('AWS', 'User')
-AUTHPASS=parser.get('AWS', 'Pass')
-BUCKET=parser.get('AWS', 'Bucket')
+AWS_ACCESS_KEY=parser.get('AWS', 'User')
+AWS_SECRET_KEY=parser.get('AWS', 'Pass')
+BUCKET=parser.get('DIARIOS', 'Bucket')
 COMANDO=str(sys.argv[1])
 ARCHIVO=str(sys.argv[2])
 PATH_DESTINO=str(sys.argv[3])
@@ -22,6 +22,7 @@ print ('el bucket es ' + BUCKET)
 print ('el archivo origen se llama ' + ARCHIVO)
 print ('el path destino es ' + PATH_DESTINO)
 print('')
+
 if COMANDO == 'descargar':
     if ARCHIVO == 'dbdeldia':
         print ('Descaragando la db de hoy')
@@ -29,7 +30,7 @@ if COMANDO == 'descargar':
         print ('Descaragando la db ' + ARCHIVO)
     
 
-#S3_OBJECT = boto3.client('s3', region_name='us-east-1', aws_access_key_id='AWS_ACCESS_KEY', aws_secret_access_key='AWS_SECRETY_KEY')
+#S3_OBJECT = boto3.client('s3', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRETY_KEY)
 
 #s3.download_file(BUCKET,ARCHIVO,PATH_DESTINO)
 
