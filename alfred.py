@@ -36,7 +36,7 @@ if COMANDO == 'descargar':
         print ('Buscando y Descaragando la db backup_reducido_' + KEY + '.tar.xz')
         resource = boto3.resource('s3', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
         try:
-            resource.Bucket(BUCKET).download_file(KEY, PATH_DESTINO)
+            resource.Bucket(BUCKET).download_file('backup_reducido_' + KEY + '.tar.xz', PATH_DESTINO)
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
                 print("No existen db en esa fecha... pruebe nuevamente cambiando la fecha con formato YYYY_MM_DD")
