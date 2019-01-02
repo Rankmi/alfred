@@ -29,19 +29,17 @@ print('')
 #SELECCION DE PROCESO
 if COMANDO == 'descargar':
     if KEY == 'dbdeldia':
-        print ('Descaragando la db de hoy')
+        print ('Buscando y Descaragando la db de hoy')
+        #Buscar la db mas reciente por fecha
+
     else:
-        print ('Descaragando la db ' + KEY)
-        #S3_OBJECT = boto3.client('s3', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
-        #S3_OBJECT.download_file(BUCKET,KEY,'/root/archivo2.tar.xz')
+        print ('Buscando y Descaragando la db backup_reducido_' + KEY + '.tar.xz')
         resource = boto3.resource('s3', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
-        #my_bucket = resource.Bucket('rankmi-backup-semanal')
-        #my_bucket.download_file(KEY, PATH_DESTINO)
         try:
-            resource.Bucket(BUCKET).download_file(KEY, '/root/final.tar.xz')
+            resource.Bucket(BUCKET).download_file(KEY, PATH_DESTINO)
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
-                print("The object does not exist.")
+                print("No existen db en esa fecha... pruebe nuevamente cambiando la fecha con formato YYYY_MM_DD")
             else:
                 raise
 
