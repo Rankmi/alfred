@@ -16,12 +16,11 @@ AWS_SECRET_KEY=parser.get('AWS', 'Pass')
 BUCKET=parser.get('DIARIOS', 'Bucket')
 COMANDO=str(sys.argv[1])
 KEY=str(sys.argv[2])
-PATH_DESTINO=str(sys.argv[3])
+#PATH_DESTINO=str(sys.argv[3])
 
 #IMPRIMIR VARIABLES
 print ('el bucket es ' + BUCKET)
 print ('el archivo origen se llama ' + KEY)
-print ('el path destino es ' + PATH_DESTINO)
 print('')
 
 #SELECCION DE PROCESO
@@ -34,7 +33,7 @@ if COMANDO == 'get':
         print ('Buscando y Descaragando la db backup_reducido_' + KEY + '.tar.xz')
         resource = boto3.resource('s3', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
         try:
-            resource.Bucket(BUCKET).download_file('backup_reducido_' + KEY + '.tar.xz', PATH_DESTINO + 'backup_reducido_' + KEY + '.tar.gz')
+            resource.Bucket(BUCKET).download_file('backup_reducido_' + KEY + '.tar.xz', 'backup_reducido_' + KEY + '.tar.gz')
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
                 print("No existen db en esa fecha... pruebe nuevamente cambiando la fecha con formato YYYY_MM_DD")
