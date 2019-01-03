@@ -27,8 +27,8 @@ print ('el path destino es ' + PATH_DESTINO)
 print('')
 
 #SELECCION DE PROCESO
-if COMANDO == 'descargar':
-    if KEY == 'dbdeldia':
+if COMANDO == 'get':
+    if KEY == 'todaydb':
         print ('Buscando y Descaragando la db de hoy')
         #Buscar la db mas reciente por fecha
 
