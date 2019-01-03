@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # change above line to point to local 
 # python executable
@@ -19,8 +19,6 @@ KEY=str(sys.argv[2])
 PATH_DESTINO=str(sys.argv[3])
 
 #IMPRIMIR VARIABLES
-print ('el AUTHUSER  es ' + AWS_ACCESS_KEY)
-print ('el AUTHPASS es ' + AWS_SECRET_KEY)
 print ('el bucket es ' + BUCKET)
 print ('el archivo origen se llama ' + KEY)
 print ('el path destino es ' + PATH_DESTINO)
