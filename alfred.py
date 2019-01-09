@@ -7,6 +7,7 @@ import threading
 import boto3
 import botocore
 import sys 
+import os.path
 from configparser import ConfigParser
 import datetime
 
@@ -46,9 +47,10 @@ class ProgressPercentage(object):
             if int(percentage) % 1 == 0:
                 print_progress(int(percentage),100,"Downloading "+filename,"Completed",0,int(percentage))
 
-
+my_path = os.path.abspath(os.path.dirname(__file__))
 parser = ConfigParser()
-parser.read('alfred.conf')
+filedir= os.path.join(my_path, "alfred.conf")
+parser.read(filedir)
 
 #INICIALIZANDO VARIABLES
 AWS_ACCESS_KEY=parser.get('AWS', 'User')
