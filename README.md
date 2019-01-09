@@ -31,3 +31,10 @@ Ejemplo comando: `./alfred.py get todaydb`
 
 - Para descargar una db de un dia especifico: (Se debe usar el formato de fecha de la siguiente forma: YYYY_MM_DD)
 ejemplo comando: `./alfred.py get 2019_01_01`
+
+
+Fase 2: Crear DUMP de la base de datos de cualquier ambiente (en desarrollo):
+
+- Para crear el dump:
+Ejemplo: `./alfred.py dump production`
+Respuesta: Para descargar la el dump ejecutar ./alfred.py get custom_yyyy_mm_dd
