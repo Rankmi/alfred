@@ -82,6 +82,13 @@ if COMANDO == 'get':
 elif COMANDO == 'dump':
     if KEY == 'production':
         print ('Your dump will be ready in aprox 15 minutes... to download use this command: alfred.py get custom')
+        #revisar si la maquina esta encendida, si lo esta solicitar intentar nuevamente, sino lo esta entonces encender
+        instances = ['i-0b08005bfb8829080']
+        resource = boto3.client('ec2', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
+        status=resource.describe_instance_status(InstanceIds=instances)
+        print (status[0].system_status.details)
+        #resource.start_instances(InstanceIds=instances)
+
     elif KEY == 'dev':
         print ('Creando dump de ambiente development')
     elif KEY == 'staging':
