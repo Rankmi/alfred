@@ -77,7 +77,15 @@ if COMANDO == 'get':
         else:
             raise
 
-elif COMANDO == 'crearlinkdiario':
-    print ('Crear link')
+elif COMANDO == 'dump':
+    if KEY == 'production':
+        print ('Your dump will be ready in aprox 15 minutes... to download use this command: alfred.py get custom')
+    elif KEY == 'dev':
+        print ('Creando dump de ambiente development')
+    elif KEY == 'staging':
+        print ('Creando dump de ambiente staging')
+    else:
+        print ('No conozco ese ambiente... batman...')
+
 else:
     print ('Command Unknown. Maybe you could try with get command')
