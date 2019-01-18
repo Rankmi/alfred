@@ -33,8 +33,9 @@ Ejemplo comando: `./alfred.py get todaydb`
 ejemplo comando: `./alfred.py get 2019_01_01`
 
 
-Fase 2: Crear DUMP de la base de datos de cualquier ambiente (en desarrollo):
+Fase 2: Crear DUMP de la base de datos de cualquier ambiente (en pruebas):
 
 - Para crear el dump:
+./alfred.py dump environment
+
 Ejemplo: `./alfred.py dump production`
-Respuesta: Para descargar la el dump ejecutar ./alfred.py get custom_yyyy_mm_dd
