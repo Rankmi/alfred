@@ -7,7 +7,6 @@ import json
 import threading
 import boto3
 import botocore
-import sys 
 import os.path
 from configparser import ConfigParser
 import datetime
@@ -64,6 +63,8 @@ KEY=str(sys.argv[2])
 filename = KEY
 
 #SELECCION DE PROCESO
+
+#PROCESO GET
 if COMANDO == 'get':
     resource = boto3.resource('s3', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
     
@@ -80,24 +81,30 @@ if COMANDO == 'get':
         else:
             raise
 
+
+#PROCESO DUMP
 elif COMANDO == 'dump':
-    if KEY == 'production':
+    if (KEY == 'production') or (KEY == 'staging') or (KEY == 'development'):
         #revisar si la maquina esta encendida, si lo esta solicitar intentar nuevamente, sino lo esta entonces encender
+        print ('Batman, the dump of the '+KEY+' environment is starting...')
         instances = ['i-0b08005bfb8829080']
         resource = boto3.client('ec2', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
         status=resource.describe_instance_status(InstanceIds=instances)
         if not status.get("InstanceStatuses"):
-            print("Encendiendo equipo para el dump, debe estar listo en 15min...")
+            print("Starting dump... Batman should wait aprox 30min to complete this asynchronous task...")
+            print("To download this dump please use this command:")
+            print("")
+            print("--->>>> alfred.py get "+KEY+"_DD_MM_YY")
+            print("")
+            s3 = boto3.resource('s3', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
+            object = s3.Object('rankmi-backup-semanal','backup-type.dat')
+            object.put(Body=KEY)
             resource.start_instances(InstanceIds=instances)
         else:
             print ("Hay otro Dump en proceso, por favor intentende nuevo en unos minutos...")
 
-    elif KEY == 'dev':
-        print ('Creando dump de ambiente development')
-    elif KEY == 'staging':
-        print ('Creando dump de ambiente staging')
     else:
-        print ('No conozco ese ambiente... batman...')
+        print ('Batman, debes indicar el ambiente correctamente...')
 
 else:
     print ('Command Unknown. Maybe you could try with get command')
