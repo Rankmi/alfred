@@ -3,14 +3,17 @@
 # change above line to point to local 
 # python executable
 import sys
-import json 
 import threading
+from configparser import ConfigParser
+
 import boto3
 import botocore
-import os.path
-from configparser import ConfigParser
 import datetime
-import argparse
+import getpass
+from .alfredconfig import AlfredConfig
+from .configfilehelper import config_file_exists, configlocation, set_config_file
+
+
 
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
     """
@@ -48,15 +51,25 @@ class ProgressPercentage(object):
             if int(percentage) % 1 == 0:
                 print_progress(int(percentage),100,"Downloading "+filename,"Completed",0,int(percentage))
 
-my_path = os.path.abspath(os.path.dirname(__file__))
-parser = ConfigParser()
-filedir= os.path.join(my_path, "alfred.conf")
-parser.read(filedir)
+
+# Asking for user access keys
+if config_file_exists():
+    parser = ConfigParser()
+    parser.read(configlocation)
+    AWS_ACCESS_KEY=parser.get('AWS', 'User')
+    AWS_SECRET_KEY=parser.get('AWS', 'Pass')
+    BUCKET = parser.get('DIARIOS', 'Bucket')
+else:
+    AWS_ACCESS_KEY = input('User: ')
+    AWS_SECRET_KEY = getpass.getpass('Password: ')
+    BUCKET = input('Bucket (default = rankmi-backup-semanal) : ')
+    if not BUCKET:
+        BUCKET = 'rankmi-backup-semanal'
+    set_config_file(AlfredConfig(AWS_ACCESS_KEY, AWS_SECRET_KEY, BUCKET))
+
+
 
 #INICIALIZANDO VARIABLES
-AWS_ACCESS_KEY=parser.get('AWS', 'User')
-AWS_SECRET_KEY=parser.get('AWS', 'Pass')
-BUCKET=parser.get('DIARIOS', 'Bucket')
 COMANDO=str(sys.argv[1])
 KEY=str(sys.argv[2])
 
@@ -64,6 +77,8 @@ KEY=str(sys.argv[2])
 filename = KEY
 
 #SELECCION DE PROCESO
+
+
 
 #PROCESO GET
 if COMANDO == 'get':
@@ -95,7 +110,7 @@ elif COMANDO == 'dump':
             print("Starting dump... Batman should wait aprox 30min to complete this asynchronous task...")
             print("To download this dump please use this command:")
             print("")
-            print("--->>>> alfred.py get "+KEY+"_DD_MM_YY")
+            print("--->>>> main.py get "+KEY+"_DD_MM_YY")
             print("")
             s3 = boto3.resource('s3', region_name='us-west-2', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
             object = s3.Object('rankmi-backup-semanal','backup-type.dat')
