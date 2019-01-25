@@ -10,8 +10,8 @@ import boto3
 import botocore
 import datetime
 import getpass
-from .alfredconfig import AlfredConfig
-from .configfilehelper import config_file_exists, configlocation, set_config_file
+from alfredconfig import AlfredConfig
+from configfilehelper import config_file_exists, configlocation, set_config_file
 
 
 
