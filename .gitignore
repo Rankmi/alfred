@@ -6,4 +6,8 @@
 
 /alfred.conf
 *.gz
+*.swp
+*__pycache__*
 /.idea
+__pycache__/
+/venv

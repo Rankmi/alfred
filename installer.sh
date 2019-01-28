@@ -17,15 +17,15 @@ case ${machine} in
         ${LINUX})
             echo "Linux detected, installing dependencies using apt"
             sudo apt update
-            sudo apt install python python3-pip;;
+            sudo apt install python python3-pip
+			sudo pip3 install pipenv;;
         ${MAC})
             echo "MacOs detected, installing dependencies using brew"
             brew update
-            brew install python3;;
+            brew install python3 pipenv;;
         *)
             echo "Your system is not supported, I'm sorry";;
 esac
 
-
-pip3 install pipenv
-pipenv install
+pipenv run pipenv install
+chmod +x ./alfred.sh
