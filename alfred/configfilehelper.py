@@ -24,5 +24,5 @@ def set_config_file(userconfig):
     config['DIARIOS']['Bucket'] = userconfig.bucket
     with open(configlocation, "w+") as file:
         config.write(file)
-        print("Creando archivo")
+        print("Archivo de configuración actualizado")
 
