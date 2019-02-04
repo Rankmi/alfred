@@ -1,18 +1,26 @@
 from pathlib import Path
 import os
 import configparser
+from awsconfig import AwsConfig
+from configparser import ConfigParser
 
 
 __configfilename = '.alfred.conf'
 configlocation = Path(os.path.join(Path.home(), __configfilename))
 
+def askcredentials():
+    key = input('User: ')
+    secret = getpass.getpass('Password: ')
+    bucket = input('Bucket (default = rankmi-backup-semanal) : ')
+    if not bucket:
+        bucket = 'rankmi-backup-semanal'
+    set_config_file(AlfredConfig(key, secret, bucket))
 
 def config_file_exists():
     if configlocation.is_file():
         return True
     else:
         return False
-
 
 def set_config_file(userconfig):
     config = configparser.ConfigParser()
@@ -26,3 +34,9 @@ def set_config_file(userconfig):
         config.write(file)
         print("Archivo de configuración actualizado")
 
+def readconfig() -> AwsConfig:
+    parser = ConfigParser()
+    parser.read(configlocation)
+    return AwsConfig(parser.get('AWS', 'User'),
+                     parser.get('AWS', 'Pass'),
+                     parser.get('DIARIOS', 'Bucket'))
