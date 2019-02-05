@@ -1,14 +1,16 @@
 from pathlib import Path
-import os
+import getpass
+from os.path import join
 import configparser
 from awsconfig import AwsConfig
+from alfredconfig import AlfredConfig
 from configparser import ConfigParser
 import getpass
 from alfredconfig import AlfredConfig
 
 
 __configfilename = '.alfred.conf'
-configlocation = Path(os.path.join(Path.home(), __configfilename))
+configlocation = Path(join(str(Path.home()), __configfilename))
 
 def askcredentials():
     key = input('User: ')
