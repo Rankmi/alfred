@@ -3,6 +3,8 @@ import os
 import configparser
 from awsconfig import AwsConfig
 from configparser import ConfigParser
+import getpass
+from alfredconfig import AlfredConfig
 
 
 __configfilename = '.alfred.conf'
