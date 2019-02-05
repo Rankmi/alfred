@@ -19,7 +19,10 @@ def greet():
 @click.argument('database_date')
 @click.option('--out', '-o', type=click.Path())
 def get(database_date, out):
-    getbackup(database_date, out)
+    if config_file_exists():
+        getbackup(database_date, out)
+    else:
+        askcredentials()
 
 @greet.command()
 @click.argument('interface')
