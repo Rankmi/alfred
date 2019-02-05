@@ -25,7 +25,16 @@ def getbackup(key, destination_file=None):
 
     awsfile = 'backup_reducido_' + filename + '.tar.xz'
     fileobject = resource.Object(awsconfig.bucket, awsfile)
-    filesize = fileobject.content_length
+    try:
+        filesize = fileobject.content_length
+    except botocore.exceptions.ParamValidationError as e:
+        print("El bucket no tiene el nombre correcto. Resetea tus credenciales" + 
+              "(./alfred.sh reset credentials)")
+        exit()
+    except botocore.exceptions.ClientError as e:
+        print("Error " + e.response['Error']['Code'])
+        print("Resetea tus credenciales (./alfred.sh reset credentials)")
+        exit()
     try:
         with tqdm(total=filesize, unit='B', unit_scale=True,
                   desc=destination_file) as t:
