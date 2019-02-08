@@ -11,7 +11,7 @@ def create_repo(name) -> str:
     if username is not None and password is not None:
         g = Github(get_username(), get_password())
         org = g.get_organization(ORGANIZATION)
-        print(org.create_repo(name).full_name)
+        print(org.create_repo(name, private=True).full_name)
     else:
         print("No has configurado tus credenciales de Github")
         reset_github_credentials()
