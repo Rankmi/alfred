@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-boto3 = "*"
 tqdm = "*"
 click = "*"
+requests = "*"
+boto3 = "*"
+pygithub = "*"
