@@ -7,7 +7,7 @@ import click
 from awsdownloader import getbackup, dumpbackup
 from configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
     reset_github_credentials, reset_everything
-from githubservice import create_repo
+from githubservice import create_repo, create_branch
 from youtrackservice import get_my_open_issues
 
 
@@ -52,6 +52,17 @@ def tasks(status):
 @click.argument("name")
 def repos(name):
     create_repo(name)
+
+
+@greet.command()
+@click.argument('name')
+@click.option('--repo', '-r')
+@click.option('--hotfix', '-h', is_flag=True)
+def branch(repo, hotfix, name):
+    if hotfix:
+        create_branch(repo, 'master', name)
+    else:
+        create_branch(repo, 'develop', name)
 
 
 @greet.command()
