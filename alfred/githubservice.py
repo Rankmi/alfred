@@ -16,6 +16,16 @@ def create_repo(name) -> str:
         print("No has configurado tus credenciales de Github")
         reset_github_credentials()
 
+def create_branch(repository, base, name):
+    username = get_username()
+    password = get_password()
+    if username is not None and password is not None:
+        g = Github(username, password)
+        org = g.get_organization(ORGANIZATION)
+        repo = org.get_repo(repository)
+        source = repo.get_branch(base)
+        repo.create_git_ref(ref='refs/heads/' + name, sha=source.commit.sha)
+
 
 def get_username():
     username = get_config_key(GITHUB_SECTION, USER_KEY)
