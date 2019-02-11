@@ -55,15 +55,17 @@ def repos(name):
 
 
 @greet.command()
+@click.argument('repo')
 @click.argument('name')
-@click.option('--repo', '-r')
 @click.option('--hotfix', '-h', is_flag=True)
 def branch(repo, hotfix, name):
-    if hotfix:
-        create_branch(repo, 'master', name)
-    else:
-        create_branch(repo, 'develop', name)
-
+    try:
+        if hotfix:
+            create_branch(repo, 'master', name)
+        else:
+            create_branch(repo, 'development', name)
+    except github.GithubException.GithubException(422) as e:
+        print("Error:", e)
 
 @greet.command()
 @click.argument('environment')

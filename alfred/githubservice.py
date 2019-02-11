@@ -6,15 +6,12 @@ ORGANIZATION = "Rankmi"
 
 
 def create_repo(name) -> str:
-    username = get_config_key(GITHUB_SECTION, USER_KEY)
-    password = get_config_key(GITHUB_SECTION, PASS_KEY)
-    if username is not None and password is not None:
-        g = Github(get_username(), get_password())
-        org = g.get_organization(ORGANIZATION)
-        print(org.create_repo(name, private=True).full_name)
-    else:
-        print("No has configurado tus credenciales de Github")
-        reset_github_credentials()
+    username = get_username()
+    password = get_password()
+    g = Github(username, password)
+    org = g.get_organization(ORGANIZATION)
+    print("Repositorio exitosamente creado en https://github.com/" + org.create_repo(name, private=True).full_name)
+
 
 def create_branch(repository, base, name):
     username = get_username()
@@ -24,6 +21,7 @@ def create_branch(repository, base, name):
     repo = org.get_repo(repository)
     source = repo.get_branch(base)
     repo.create_git_ref(ref='refs/heads/' + name, sha=source.commit.sha)
+    print('Rama ' +repository+'/'+name+ ' creada exitosamente. Puedes verla en: https://github.com/Rankmi/'+repository+'/tree/'+name)
 
 
 def get_username():
