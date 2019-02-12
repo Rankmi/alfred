@@ -7,7 +7,7 @@ import click
 from awsdownloader import getbackup, dumpbackup
 from configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
     reset_github_credentials, reset_everything
-from githubservice import create_repo, create_branch
+from githubservice import create_repo, create_branch, create_pr
 from youtrackservice import get_my_open_issues
 
 
@@ -63,6 +63,14 @@ def branch(repo, hotfix, name):
         create_branch(repo, 'master', name)
     else:
         create_branch(repo, 'development', name)
+
+@greet.command()
+@click.argument('repo')
+@click.option('--title', '-t')
+@click.option('--base', '-b')
+@click.option('--rama', '-r')
+def pr(title, base, rama, repo):
+    create_pr(title, base, rama, repo)
 
 @greet.command()
 @click.argument('environment')
