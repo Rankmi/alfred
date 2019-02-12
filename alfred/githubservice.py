@@ -24,6 +24,15 @@ def create_branch(repository, base, name):
     print('Rama ' +repository+'/'+name+ ' creada exitosamente. Puedes verla en: https://github.com/Rankmi/'+repository+'/tree/'+name)
 
 
+def create_pr(titulo, compare, rama, repository):
+    username = get_username()
+    password = get_password()
+    g = Github(username, password)
+    org = g.get_organization(ORGANIZATION)
+    repo = org.get_repo(repository)
+    print("Pull request creado. Puedes revisarlo en:", repo.create_pull(title=titulo, body="", base=compare, head="Rankmi:"+rama).html_url)
+
+
 def get_username():
     username = get_config_key(GITHUB_SECTION, USER_KEY)
     if username is not None:
