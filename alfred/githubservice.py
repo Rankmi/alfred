@@ -5,18 +5,20 @@ from configfilehelper import get_config_key, USER_KEY, GITHUB_SECTION, PASS_KEY,
 ORGANIZATION = "Rankmi"
 
 
-def create_repo(name) -> str:
+def get_github_instance():
     username = get_username()
     password = get_password()
-    g = Github(username, password)
+    return Github(username, password)
+
+
+def create_repo(name) -> str:
+    g = get_github_instance()
     org = g.get_organization(ORGANIZATION)
     print("Repositorio exitosamente creado en https://github.com/" + org.create_repo(name, private=True).full_name)
 
 
 def create_branch(repository, base, name):
-    username = get_username()
-    password = get_password()
-    g = Github(username, password)
+    g = get_github_instance()
     org = g.get_organization(ORGANIZATION)
     repo = org.get_repo(repository)
     source = repo.get_branch(base)
@@ -25,9 +27,7 @@ def create_branch(repository, base, name):
 
 
 def create_pr(titulo, compare, rama, repository):
-    username = get_username()
-    password = get_password()
-    g = Github(username, password)
+    g = get_github_instance()
     org = g.get_organization(ORGANIZATION)
     repo = org.get_repo(repository)
     if titulo == rama:
