@@ -30,6 +30,8 @@ def create_pr(titulo, compare, rama, repository):
     g = Github(username, password)
     org = g.get_organization(ORGANIZATION)
     repo = org.get_repo(repository)
+    if titulo == rama:
+        titulo = titulo.replace('-', ' ')
     print("Pull request creado. Puedes revisarlo en:", repo.create_pull(title=titulo, body="", base=compare, head="Rankmi:"+rama).html_url)
 
 
