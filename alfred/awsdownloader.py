@@ -3,6 +3,7 @@ import datetime
 import botocore
 from tqdm import tqdm
 from configfilehelper import readconfig
+from tarhelper import uncompress
 
 
 def hook(t):
@@ -12,7 +13,7 @@ def hook(t):
     return inner
 
 
-def getbackup(key, destination_file=None):
+def getbackup(key, destination_file=None, uncompress_file=False):
     awsconfig = readconfig()
     resource = boto3.resource('s3', region_name='us-west-2',
                               aws_access_key_id=awsconfig.key,
@@ -37,12 +38,14 @@ def getbackup(key, destination_file=None):
         exit()
     except botocore.exceptions.ClientError as e:
         print("Error " + e.response['Error']['Code'])
-        print("Resetea tus credenciales (./alfred.sh reset credentials)")
         exit()
     try:
         with tqdm(total=filesize, unit='B', unit_scale=True,
                   desc=destination_file) as t:
             resource.Bucket(awsconfig.bucket).download_file(awsfile, destination_file, Callback=hook(t))
+        if uncompress_file:
+            uncompress(destination_file)
+
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "404":
             print("There's no database... Try with the following format YYYY_MM_DD")
