@@ -17,11 +17,12 @@ def greet():
 
 
 @greet.command()
-@click.argument('database_date')
 @click.option('--out', '-o', type=click.Path())
-def get(database_date, out):
+@click.option('--extract', is_flag=True)
+@click.argument('database_date')
+def get(database_date, out, extract):
     if config_file_exists():
-        getbackup(database_date, out)
+        getbackup(database_date, out, extract)
     else:
         reset_aws_credentials()
 
@@ -64,6 +65,7 @@ def branch(repo, hotfix, name):
     else:
         create_branch(repo, 'development', name)
 
+
 @greet.command()
 @click.argument('repo')
 @click.option('--title', '-t', default=None)
@@ -71,6 +73,7 @@ def branch(repo, hotfix, name):
 @click.option('--hotfix', '-h', is_flag=True)
 def pr(title, rama, hotfix, repo):
     create_pr(title if title else rama, 'master' if hotfix else 'develop', rama, repo)
+
 
 @greet.command()
 @click.argument('environment')
