@@ -19,6 +19,8 @@ def getbackup(key, destination_file=None):
                               aws_secret_access_key=awsconfig.secret)
     if key == 'todaydb':
         filename = datetime.datetime.now().strftime('%Y_%m_%d')
+    else:
+        filename = key
 
     if destination_file is None:
         destination_file = 'backup_reducido_' + filename + '.tar.xz'
