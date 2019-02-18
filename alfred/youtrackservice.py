@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
+from .configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
     reset_youtrack_credentials
 
 __base_url = "https://rankmi.myjetbrains.com/youtrack/api/"

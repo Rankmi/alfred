@@ -4,11 +4,11 @@
 
 import click
 
-from awsdownloader import getbackup, dumpbackup
-from configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
+from .awsdownloader import getbackup, dumpbackup
+from .configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
     reset_github_credentials, reset_everything
-from githubservice import create_repo, create_branch, create_pr
-from youtrackservice import get_my_open_issues
+from .githubservice import create_repo, create_branch, create_pr
+from .youtrackservice import get_my_open_issues
 
 
 @click.group()
@@ -81,5 +81,5 @@ def dump(environment):
     dumpbackup(environment)
 
 
-if __name__ == '__main__':
+if __name__ == 'main':
     greet(prog_name='alfred.sh')
