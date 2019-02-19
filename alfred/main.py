@@ -8,7 +8,8 @@ from awsdownloader import getbackup, dumpbackup
 from configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
     reset_github_credentials, reset_everything
 from githubservice import create_repo, create_branch, create_pr
-from youtrackservice import get_my_open_issues
+from youtrackservice import get_my_open_issues, get_issue_by_id
+from printservice import print_issue
 
 
 @click.group()
@@ -47,6 +48,12 @@ def reset(interface):
 def tasks(status):
     if status == "open":
         get_my_open_issues()
+
+
+@greet.command()
+@click.argument('issue')
+def issue(issue):
+    print_issue(get_issue_by_id(issue))
 
 
 @greet.command()
