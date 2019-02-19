@@ -30,13 +30,13 @@ def get(database_date, out, extract):
 @greet.command()
 @click.argument("interface")
 def reset(interface):
-    if interface == "credentials":
+    if interface == "aws":
         reset_aws_credentials()
-    elif interface == "youtrack-credentials":
+    elif interface == "youtrack":
         reset_youtrack_credentials()
-    elif interface == "github-credentials":
+    elif interface == "github":
         reset_github_credentials()
-    elif interface == "everything":
+    elif interface == "all":
         reset_everything()
     else:
         print("No conozco esa opción")
@@ -51,7 +51,7 @@ def tasks(status):
 
 @greet.command()
 @click.argument("name")
-def repos(name):
+def repo(name):
     create_repo(name)
 
 
