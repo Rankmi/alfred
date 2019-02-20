@@ -5,8 +5,8 @@ from configparser import ConfigParser
 from os.path import join
 from pathlib import Path
 
-from alfredconfig import AlfredConfig
-from awsconfig import AwsConfig
+from .alfredconfig import AlfredConfig
+from .awsconfig import AwsConfig
 
 __config_filename = '.alfred.conf'
 config_location = Path(join(str(Path.home()), __config_filename))
