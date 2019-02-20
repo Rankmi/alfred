@@ -4,6 +4,7 @@ import requests
 
 from configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
     reset_youtrack_credentials
+from printservice import print_issue
 
 __base_url = "https://rankmi.myjetbrains.com/youtrack/api/"
 
@@ -14,9 +15,15 @@ def get_my_open_issues():
     request_url = __base_url + "issues"
     user_request = requests.get(request_url, headers=get_header(), params=params)
     user_list = json.loads(user_request.text)
-    for user in user_list:
-        deserialized_user = User(user['summary'], user['numberInProject'], user['project'])
-        print(deserialized_user)
+    issues = []
+    for n in range(len(user_list)):
+        deserialized_user = User(user_list[n]['summary'], user_list[n]['numberInProject'], user_list[n]['project'])
+        issues.append(deserialized_user.project + "-" + deserialized_user.numberInProject)
+        print("["+n+"]", deserialized_user)
+    indice = input("hola")
+    print(issues[indice])
+    print_issue(issues[indice])
+    
 
 
 def get_issue_by_id(id):
