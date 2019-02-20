@@ -2,8 +2,8 @@ import boto3
 import datetime
 import botocore
 from tqdm import tqdm
-from .configfilehelper import readconfig
-from .tarhelper import uncompress
+from alfred.configfilehelper import readconfig
+from alfred.filehelper import uncompress, delete
 
 
 def hook(t):
@@ -13,11 +13,7 @@ def hook(t):
     return inner
 
 
-def getbackup(key, destination_file=None, uncompress_file=False):
-    awsconfig = readconfig()
-    resource = boto3.resource('s3', region_name='us-west-2',
-                              aws_access_key_id=awsconfig.key,
-                              aws_secret_access_key=awsconfig.secret)
+def get_backup(key, destination_file=None, uncompress_file=False, delete_after_extraction=False):
     if key == 'todaydb':
         filename = datetime.datetime.now().strftime('%Y_%m_%d')
     else:
@@ -26,12 +22,29 @@ def getbackup(key, destination_file=None, uncompress_file=False):
     if destination_file is None:
         destination_file = 'backup_reducido_' + filename + '.tar.xz'
 
-    print('Starting Download')
-
     awsfile = 'backup_reducido_' + filename + '.tar.xz'
-    fileobject = resource.Object(awsconfig.bucket, awsfile)
+
+    download_file(destination_file, awsfile)
+
+    if uncompress_file:
+        uncompress(filepath=destination_file, delete_after=delete_after_extraction)
+
+
+def download_file(destination_file, aws_file):
+    awsconfig = readconfig()
+
+    resource = boto3.resource('s3', region_name='us-west-2',
+                              aws_access_key_id=awsconfig.key,
+                              aws_secret_access_key=awsconfig.secret)
+
+    fileobject = resource.Object(awsconfig.bucket, aws_file)
     try:
+        print('Starting Download')
         filesize = fileobject.content_length
+        with tqdm(total=filesize, unit='B', unit_scale=True,
+                  desc=destination_file) as t:
+            resource.Bucket(awsconfig.bucket).download_file(aws_file, destination_file, Callback=hook(t))
+        return True
     except botocore.exceptions.ParamValidationError as e:
         print("El bucket no tiene el nombre correcto. Resetea tus credenciales" +
               "(./alfred.sh reset credentials)")
@@ -39,18 +52,6 @@ def getbackup(key, destination_file=None, uncompress_file=False):
     except botocore.exceptions.ClientError as e:
         print("Error " + e.response['Error']['Code'])
         exit()
-    try:
-        with tqdm(total=filesize, unit='B', unit_scale=True,
-                  desc=destination_file) as t:
-            resource.Bucket(awsconfig.bucket).download_file(awsfile, destination_file, Callback=hook(t))
-        if uncompress_file:
-            uncompress(destination_file)
-
-    except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "404":
-            print("There's no database... Try with the following format YYYY_MM_DD")
-        else:
-            raise
 
 
 def dumpbackup(key):
