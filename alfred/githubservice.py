@@ -1,6 +1,6 @@
 from github import Github
 
-from configfilehelper import get_config_key, USER_KEY, GITHUB_SECTION, PASS_KEY, reset_github_credentials
+from .configfilehelper import get_config_key, USER_KEY, GITHUB_SECTION, PASS_KEY, reset_github_credentials
 
 ORGANIZATION = "Rankmi"
 
