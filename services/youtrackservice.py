@@ -1,10 +1,12 @@
-import json
+# -*- coding: utf-8 -*-
 import datetime
+import json
+
 import requests
 
-from .configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
+from alfred.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
     reset_youtrack_credentials
-from .printservice import print_issue
+from alfred.printer import print_issue
 
 __base_url = "https://rankmi.myjetbrains.com/youtrack/api/"
 
@@ -19,11 +21,8 @@ def get_my_open_issues():
     for n in range(len(user_list)):
         deserialized_user = User(user_list[n]['summary'], user_list[n]['numberInProject'], user_list[n]['project'])
         issues.append(deserialized_user.project['shortName'] + "-" + str(deserialized_user.numberInProject))
-        print("["+str(n)+"]", deserialized_user)
-    indice = int(input("hola"))
-    print(issues[indice])
-    print_issue(issues[indice])
-    
+        print("[" + str(n) + "]", deserialized_user)
+    print_issue(get_issue_by_id(issues[int(input("Ingresa el índice del ticket que deseas revisar: "))]))
 
 
 def get_issue_by_id(id):
@@ -75,5 +74,5 @@ class Issue:
         self.numberInProject = str(number_in_project)
         self.summary = summary
         self.reporter = reporter['name']
-        self.created = datetime.datetime.fromtimestamp(created/1000).strftime("%B %d, %Y")
+        self.created = datetime.datetime.fromtimestamp(created / 1000).strftime("%B %d, %Y")
         self.description = description
