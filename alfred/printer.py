@@ -1,5 +1,3 @@
-from .youtrackservice import get_my_open_issues, get_issue_by_id
-
 
 def print_issue(issue):
     print("-------------------------------------")
