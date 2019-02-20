@@ -89,6 +89,11 @@ Para obtener una lista de los tickets por resolver puedes usar:
 
 #### Revisar un ticket por ID
 
+Para revisar tus tareas abiertas, ejecuta:
+``` bash
+ $ alfred tasks open
+```
+
 A partir de la ID de un ticket, recibirás información relevante sobre la tarea. Para hacerlo utiliza el comando:
 ``` bash
  # La ID puede ser en formato RKM-XXXX o solo XXXX

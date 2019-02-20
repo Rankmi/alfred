@@ -2,8 +2,8 @@ import boto3
 import datetime
 import botocore
 from tqdm import tqdm
-from configfilehelper import readconfig
-from tarhelper import uncompress
+from .configfilehelper import readconfig
+from .tarhelper import uncompress
 
 
 def hook(t):
