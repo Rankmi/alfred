@@ -4,11 +4,12 @@
 
 import click
 
-from awsdownloader import getbackup, dumpbackup
-from configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
+from services.awsservice import get_backup, dumpbackup
+from alfred.configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
     reset_github_credentials, reset_everything
-from githubservice import create_repo, create_branch
-from youtrackservice import get_my_open_issues
+from services.githubservice import create_repo, create_branch, create_pr
+from services.youtrackservice import get_my_open_issues, get_issue_by_id
+from alfred.printer import print_issue
 
 
 @click.group()
@@ -17,11 +18,13 @@ def greet():
 
 
 @greet.command()
-@click.argument('database_date')
 @click.option('--out', '-o', type=click.Path())
-def get(database_date, out):
+@click.option('--extract', is_flag=True)
+@click.option('--delete', is_flag=True)
+@click.argument('database_date')
+def get(database_date, out, extract, delete):
     if config_file_exists():
-        getbackup(database_date, out)
+        get_backup(database_date, out, extract, delete)
     else:
         reset_aws_credentials()
 
@@ -29,13 +32,13 @@ def get(database_date, out):
 @greet.command()
 @click.argument("interface")
 def reset(interface):
-    if interface == "credentials":
+    if interface == "aws":
         reset_aws_credentials()
-    elif interface == "youtrack-credentials":
+    elif interface == "youtrack":
         reset_youtrack_credentials()
-    elif interface == "github-credentials":
+    elif interface == "github":
         reset_github_credentials()
-    elif interface == "everything":
+    elif interface == "all":
         reset_everything()
     else:
         print("No conozco esa opción")
@@ -49,8 +52,14 @@ def tasks(status):
 
 
 @greet.command()
+@click.argument('issue')
+def issue(issue):
+    print_issue(get_issue_by_id(issue))
+
+
+@greet.command()
 @click.argument("name")
-def repos(name):
+def repo(name):
     create_repo(name)
 
 
@@ -63,6 +72,16 @@ def branch(repo, hotfix, name):
         create_branch(repo, 'master', name)
     else:
         create_branch(repo, 'development', name)
+
+
+@greet.command()
+@click.argument('repo')
+@click.option('--title', '-t', default=None)
+@click.option('--rama', '-r')
+@click.option('--hotfix', '-h', is_flag=True)
+def pr(title, rama, hotfix, repo):
+    create_pr(title if title else rama, 'master' if hotfix else 'develop', rama, repo)
+
 
 @greet.command()
 @click.argument('environment')
