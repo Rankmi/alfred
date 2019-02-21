@@ -6,7 +6,7 @@ from pathlib import Path
 def uncompress(filepath, delete_after=False):
     subprocess.run(["echo", "Decompressing"])
     subprocess.run(
-        ['tar',
+        ['gtar',
          '-xjf',
          filepath,
          '--checkpoint=1', r"--checkpoint-action=ttyout=\r(%d sec): %{r}T"])
