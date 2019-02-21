@@ -22,7 +22,7 @@ case ${machine} in
         ${MAC})
             echo "MacOs detected, installing dependencies using brew"
             brew update
-            brew install python3 pipenv;;
+            brew install python3 pipenv gnu-tar;;
         *)
             echo "Your system is not supported, I'm sorry";;
 esac
