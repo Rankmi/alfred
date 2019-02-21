@@ -47,7 +47,7 @@ def download_file(destination_file, aws_file):
         return True
     except botocore.exceptions.ParamValidationError as e:
         print("El bucket no tiene el nombre correcto. Resetea tus credenciales" +
-              "(./alfred.sh reset credentials)")
+              "(alfred reset aws)")
         exit()
     except botocore.exceptions.ClientError as e:
         print("Error " + e.response['Error']['Code'])
