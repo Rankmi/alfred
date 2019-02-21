@@ -29,3 +29,7 @@ esac
 
 pipenv run pipenv install
 chmod +x ./alfred.sh
+
+if [ "$1" == "gbin" ]; then 
+    pipenv run pyinstaller main.py -n alfred --onefile
+fi
