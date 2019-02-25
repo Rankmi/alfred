@@ -9,7 +9,7 @@ from alfred.configfilehelper import config_file_exists, reset_aws_credentials, r
     reset_github_credentials, reset_everything
 from services.githubservice import create_repo, create_branch, create_pr
 from services.youtrackservice import get_my_open_issues, get_issue_by_id
-from alfred.printer import print_issue
+from alfred.printer import print_issue, print_issue_list
 
 
 @click.group()
@@ -47,8 +47,7 @@ def reset(interface):
 @greet.command()
 @click.argument("status")
 def tasks(status):
-    if status == "open":
-        get_my_open_issues()
+    print_issue_list(get_my_open_issues(), status)
 
 
 @greet.command()
