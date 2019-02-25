@@ -1,14 +1,20 @@
 
-def print_issue(issue):
+def print_issue(fields):
     print("-------------------------------------")
-    print("[" + issue.project + "-" + issue.numberInProject
-          + "] Creado por: " + issue.reporter
-          + " el " + issue.created)
-    print(issue.summary)
+    print("[" + fields['project'] + "-" + fields['numberInProject']
+          + "] Creado por: " + fields['reporter']
+          + " el " + fields['created'])
+    print(fields['summary'])
+    print("[" + fields['State'] + "]", "[" + fields['Priority'] + "]")
     print("Puedes revisarlo aqui: https://rankmi.myjetbrains.com/youtrack/issue/"
-          + issue.project + "-" + issue.numberInProject)
+          + fields['project'] + "-" + fields['numberInProject'])
     print("-------------------------------------")
 
     print("Descripcion:")
-    print(issue.description)
+    print(fields['description'])
+    print("-------------------------------------")
+
+    print("Asignados:")
+    for field in fields["assignees"]:
+        print("- "+ field +":", fields["assignees"][field])
     print("-------------------------------------")

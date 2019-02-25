@@ -22,20 +22,48 @@ def get_my_open_issues():
         deserialized_user = User(user_list[n]['summary'], user_list[n]['numberInProject'], user_list[n]['project'])
         issues.append(deserialized_user.project['shortName'] + "-" + str(deserialized_user.numberInProject))
         print("[" + str(n) + "]", deserialized_user)
-    print_issue(get_issue_by_id(issues[int(input("Ingresa el índice del ticket que deseas revisar: "))]))
 
+    try:
+        print_issue(get_issue_by_id(issues[int(input("Ingresa el índice del ticket que deseas revisar: "))]))
+    except (ValueError, IndexError):
+        print("Debes ingresar un índice válido.")
 
 def get_issue_by_id(id):
-    params = dict(fields="description,created,numberInProject,project(shortName),summary,reporter(name),fields")
+    params = dict(fields="description,created,numberInProject,project(shortName),summary,reporter(name),"
+                         "fields(projectCustomField(field(name)),value(name))")
     if id.isdigit():
         request_url = __base_url + "issues/RKM-" + id
     else:
         request_url = __base_url + "issues/" + id
     user_request = requests.get(request_url, headers=get_header(), params=params)
     fields = json.loads(user_request.text)
+ 
+    usefulFields = {
+        "project": fields['project']['shortName'],
+        "numberInProject": str(fields['numberInProject']),
+        "summary": fields['summary'],
+        "reporter": fields['reporter']['name'],
+        "created": datetime.datetime.fromtimestamp( fields['created'] / 1000).strftime("%B %d, %Y"),
+        "description": fields['description'],
+        "assignees": {}
+        
+    }
 
-    return Issue(fields['project'], fields['numberInProject'], fields['summary'], fields['reporter'], fields['created'],
-                 fields['description'])
+    requiredCustoms = ["State", "Priority"]
+    requiredAssignees = ["Responsable", "Revisor", "Diseñador(a)", "Code reviewer", "Jefe de proyecto"]
+
+    for field in fields['fields']:
+
+        fieldName = field['projectCustomField']['field']['name']
+        fieldValue = field['value']
+
+        if fieldName in requiredCustoms:
+            usefulFields[fieldName] = fieldValue['name'] if fieldValue else None
+            
+        elif fieldName in requiredAssignees:
+            usefulFields["assignees"][fieldName] = fieldValue['name'] if fieldValue else None
+
+    return usefulFields
 
 
 def get_youtrack_user():
@@ -66,13 +94,3 @@ class User:
 
     def __str__(self):
         return str(f"{self.project['shortName']}-{self.numberInProject}-{str(self.summary).replace(' ', '_')}")
-
-
-class Issue:
-    def __init__(self, project, number_in_project, summary, reporter, created, description):
-        self.project = project['shortName']
-        self.numberInProject = str(number_in_project)
-        self.summary = summary
-        self.reporter = reporter['name']
-        self.created = datetime.datetime.fromtimestamp(created / 1000).strftime("%B %d, %Y")
-        self.description = description
