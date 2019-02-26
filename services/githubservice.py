@@ -1,4 +1,5 @@
 import os
+import subprocess
 from github import Github
 
 from alfred.configfilehelper import get_config_key, USER_KEY, GITHUB_SECTION, PASS_KEY, reset_github_credentials
@@ -28,12 +29,15 @@ def create_branch(repository, base, name):
         'Rama ' + repository + '/' + name + ' creada exitosamente. Puedes verla en: https://github.com/Rankmi/' + repository + '/tree/' + name)
 
 
-def create_pr(titulo, compare, rama, repository):
+def create_pr(rama, repository, compare):
     g = get_github_instance()
     org = g.get_organization(ORGANIZATION)
+    
+    rama = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])[:-1].decode("utf-8")
+    titulo = "[" + rama.split('/')[0] +  "] " + rama.split('/')[1]
+    repository = os.getcwd().split('/')[-1]
     repo = org.get_repo(repository)
-    if titulo == rama:
-        titulo = titulo.replace('-', ' ')
+
     print("Pull request creado. Puedes revisarlo en:",
           repo.create_pull(title=titulo, body="", base=compare, head="Rankmi:" + rama).html_url)
 
