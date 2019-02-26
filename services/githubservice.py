@@ -1,3 +1,4 @@
+import os
 from github import Github
 
 from alfred.configfilehelper import get_config_key, USER_KEY, GITHUB_SECTION, PASS_KEY, reset_github_credentials
@@ -35,6 +36,14 @@ def create_pr(titulo, compare, rama, repository):
         titulo = titulo.replace('-', ' ')
     print("Pull request creado. Puedes revisarlo en:",
           repo.create_pull(title=titulo, body="", base=compare, head="Rankmi:" + rama).html_url)
+
+
+def is_folder_github_repo(path=os.getcwd()):
+    g = get_github_instance()
+    org = g.get_organization(ORGANIZATION)
+    repoList = org.get_repos()
+    
+    return path.split("/")[-1] in [repo.name for repo in repoList]
 
 
 def get_username():
