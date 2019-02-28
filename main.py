@@ -64,14 +64,13 @@ def repo(name):
 
 
 @greet.command()
-@click.argument('repo')
 @click.argument('name')
 @click.option('--hotfix', '-h', is_flag=True)
-def branch(repo, hotfix, name):
+def branch(hotfix, name):
     if hotfix:
-        create_branch(repo, 'master', name)
+        create_branch('master', name)
     else:
-        create_branch(repo, 'development', name)
+        create_branch('development', name)
 
 
 @greet.command()

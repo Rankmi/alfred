@@ -1,4 +1,5 @@
 import os
+import subprocess
 from github import Github
 
 from alfred.configfilehelper import get_config_key, USER_KEY, GITHUB_SECTION, PASS_KEY, reset_github_credentials
@@ -18,14 +19,21 @@ def create_repo(name) -> str:
     print("Repositorio creado exitosamente en https://github.com/" + org.create_repo(name, private=True).full_name)
 
 
-def create_branch(repository, base, name):
+def create_branch(base, name):
     g = get_github_instance()
     org = g.get_organization(ORGANIZATION)
-    repo = org.get_repo(repository)
-    source = repo.get_branch(base)
-    repo.create_git_ref(ref='refs/heads/' + name, sha=source.commit.sha)
-    print(
-        'Rama ' + repository + '/' + name + ' creada exitosamente. Puedes verla en: https://github.com/Rankmi/' + repository + '/tree/' + name)
+
+    if is_folder_github_repo():
+        repo = org.get_repo(os.getcwd().split("/")[-1])
+        source = repo.get_branch(base)
+        repo.create_git_ref(ref='refs/heads/' + name, sha=source.commit.sha)
+        print(
+            'Rama ' + name + ' creada exitosamente. Puedes verla en: https://github.com/Rankmi/' + repository + '/tree/' + name)
+        subprocess.run(["git", "fetch", "--all"])
+        subprocess.run(["git", "checkout", name])
+
+    else:
+        print("Debes localizarte en un repositorio válido.")
 
 
 def create_pr(titulo, compare, rama, repository):
