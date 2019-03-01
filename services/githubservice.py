@@ -24,11 +24,12 @@ def create_branch(base, name):
     org = g.get_organization(ORGANIZATION)
 
     if is_folder_github_repo():
-        repo = org.get_repo(os.getcwd().split("/")[-1])
+        folder = os.getcwd().split("/")[-1]
+        repo = org.get_repo(folder)
         source = repo.get_branch(base)
         repo.create_git_ref(ref='refs/heads/' + name, sha=source.commit.sha)
         print(
-            'Rama ' + name + ' creada exitosamente. Puedes verla en: https://github.com/Rankmi/' + repository + '/tree/' + name)
+            'Rama ' + name + ' creada exitosamente. Puedes verla en: https://github.com/Rankmi/' + folder + '/tree/' + name)
         subprocess.run(["git", "fetch", "--all"])
         subprocess.run(["git", "checkout", name])
 
