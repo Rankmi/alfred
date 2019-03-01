@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-
 import requests
 
 from alfred.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
@@ -37,6 +36,15 @@ def get_issue_by_id(id):
     fields = json.loads(user_request.text)
 
     return Issue(fields, complete=True)
+
+
+def change_issue_state(id, state):
+    if id.isdigit():
+        request_url = "https://rankmi.myjetbrains.com/youtrack/rest/issue/RKM-" + id + "/execute?command=State+" + state
+    else:
+        request_url = "https://rankmi.myjetbrains.com/youtrack/rest/issue/" + id + "/execute?command=State+" + state
+
+    return requests.post(request_url, headers=get_header())
 
 
 def get_youtrack_user():
