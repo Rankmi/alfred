@@ -4,6 +4,7 @@ class Issue:
     def __init__(self, fields, complete=False):
         self.id = fields['project']['shortName'] + "-" + str(fields['numberInProject'])
         self.summary = fields['summary']
+        self.branch = self.id + "-" + self.summary.replace(" ", "-")
 
         if complete:
             self.context = Context(fields)
