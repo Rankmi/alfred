@@ -8,7 +8,7 @@ from services.awsservice import get_backup, dumpbackup
 from alfred.configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
     reset_github_credentials, reset_everything
 from services.githubservice import create_repo, create_branch, create_pr
-from services.youtrackservice import get_my_open_issues, get_issue_by_id
+from services.youtrackservice import get_issues_by_state, get_issue_by_id
 from alfred.printer import print_issue, print_issue_list
 
 
@@ -45,9 +45,9 @@ def reset(interface):
 
 
 @greet.command()
-@click.argument("status")
-def tasks(status):
-    print_issue_list(get_my_open_issues(), status)
+@click.argument("state")
+def tasks(state):
+    print_issue_list(get_issues_by_state(state))
 
 
 @greet.command()
