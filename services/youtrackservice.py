@@ -7,20 +7,28 @@ from alfred.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_K
 from services.issueclasses import Issue, Context, Assignees
 
 __base_url = "https://rankmi.myjetbrains.com/youtrack/api/"
+STATES = { 
+        "todo": "#{Por hacer}",
+        "prog": "#{En progreso}",
+        "cr": "#{Para CodeReview}",
+        "changes": "#{CR Cambios Solicitados}",
+        "qa": "#{Pendiente de QA}",
+        "review": "#{En Review}",
+        "accepted": "#{Aceptado}",
+        "rejected": "#{Rechazado}",
+        "open": "#Unresolved",
+    }
 
-
-def get_my_open_issues():
+def get_issues_by_state(state):
     params = dict(fields="project(shortName),numberInProject,summary,"
                          "fields(projectCustomField(field(name)),value(name))",
-                  query=get_youtrack_user() + " #unresolved")
+                  query=get_youtrack_user() + " " + STATES[state])
+
     request_url = __base_url + "issues"
     user_request = requests.get(request_url, headers=get_header(), params=params)
     user_list = json.loads(user_request.text)
     
-    issues = []
-
-    for issue in user_list:
-        issues.append(Issue(issue))
+    issues = [Issue(issue) for issue in user_list if Issue(issue).state not in ["Archivado", "Backlog"]]
     
     return issues
 
