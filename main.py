@@ -73,12 +73,9 @@ def branch(hotfix, name):
 
 
 @greet.command()
-@click.argument('repo')
-@click.option('--title', '-t', default=None)
-@click.option('--rama', '-r')
 @click.option('--hotfix', '-h', is_flag=True)
-def pr(title, rama, hotfix, repo):
-    create_pr(title if title else rama, 'master' if hotfix else 'develop', rama, repo)
+def pr(hotfix):
+    create_pr('master' if hotfix else 'develop')
 
 
 @greet.command()
