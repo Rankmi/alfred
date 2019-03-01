@@ -1,4 +1,5 @@
-from services.youtrackservice import get_issue_by_id
+from services.youtrackservice import get_issue_by_id, change_issue_state
+from services.githubservice import create_branch
 from services.issueclasses import Issue
 
 HEADER = '\033[96m'
@@ -28,6 +29,10 @@ def print_issue(issue):
         print("- "+ BOLD + field + ENDC +":", issue.assignees.listedAssignees[field])
     print("--------------------------------------------------------------------------")
 
+    if issue.state.lower() == "por hacer":
+        start_issue(issue)
+
+
 def print_issue_list(issues, status):
     todo = ["Por hacer", "Por Hacer"]
     prog = ["En progreso", "En curso", "Para CodeReview", "CR Cambios solicitados", "Pendiente de QA", "En review", "Rechazado"]
@@ -51,3 +56,12 @@ def print_issue_list(issues, status):
     except (ValueError, IndexError):
         print("Debes ingresar un índice válido.")
 
+
+def start_issue(issue):
+    initializeIssue = input(CRITICAL + BOLD + "Deseas comenzar esta tarea [y/n]: " + ENDC)
+    if initializeIssue == "y":
+        change_issue_state(issue.id, "En progreso")
+        print(HEADER + BOLD + "Estado de la tarea fue cambiado a 'En progreso'" + ENDC)
+        createBranch = input(CRITICAL + BOLD + "Deseas crear una rama para esta tarea [y/n]: " + ENDC)
+        if createBranch == "y":
+            create_branch('master' if issue.priority == "Show-stopper" else 'development', issue.branch)
