@@ -4,7 +4,7 @@ from services.issueclasses import Issue
 
 HEADER = '\033[96m'
 GREEN = '\033[92m'
-SHOWSTOPPER = '\033[91m',
+SHOWSTOPPER = '\033[91m'
 CRITICAL = '\033[93m'
 ENDC = '\033[0m'
 BOLD = '\033[1m'
@@ -33,28 +33,25 @@ def print_issue(issue):
         start_issue(issue)
 
 
-def print_issue_list(issues, status):
-    todo = ["Por hacer", "Por Hacer"]
-    prog = ["En progreso", "En curso", "Para CodeReview", "CR Cambios solicitados", "Pendiente de QA", "En review", "Rechazado"]
-    open = todo + prog
-
-    issue_ids = []
+def print_issue_list(issues):
+    issue_ids = [issue.id for issue in issues]
     index = 0
 
     for issue in issues:
-        if issue.state in eval(status):
-            issue_ids.append(issue.id)
-            space = "\t" if issue.priority in ["Minor", "Major"] else ""
-            color = SHOWSTOPPER + BOLD if issue.priority == "Show-stopper" else ""
-            color = CRITICAL + BOLD if issue.priority == "Critical" else ""
-            print(color + "[" + str(index) + "] \t", issue.priority, "\t"+space, issue.summary + ENDC)
-            index += 1
+        space = "\t" if issue.priority in ["Minor", "Major"] else ""
+        color = SHOWSTOPPER + BOLD if issue.priority == "Show-stopper" else ""
+        color = CRITICAL + BOLD if issue.priority == "Critical" else ""
+        print(color + "[" + str(index) + "] \t", issue.priority, "\t"+space, issue.summary + ENDC)
+        index += 1
 
-    try:
-        print("--------------------------------------------------------------------------")
-        print_issue(get_issue_by_id(issue_ids[int(input(BOLD + "Ingresa el índice del ticket que deseas revisar: " + ENDC))]))
-    except (ValueError, IndexError):
-        print("Debes ingresar un índice válido.")
+    if len(issue_ids):
+        try:
+            print("--------------------------------------------------------------------------")
+            print_issue(get_issue_by_id(issue_ids[int(input(BOLD + "Ingresa el índice del ticket que deseas revisar: " + ENDC))]))
+        except (ValueError, IndexError):
+            print("Debes ingresar un índice válido.")
+    else:
+        print(BOLD + "No tienes tickets para revisar en este estado." + ENDC)
 
 
 def start_issue(issue):
