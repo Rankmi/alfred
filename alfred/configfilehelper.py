@@ -20,6 +20,18 @@ PASS_KEY = "Pass"
 YOUTRACK_KEY = "Key"
 
 
+def reset_credentials(interface):
+    interfaces = {
+        "aws": reset_aws_credentials,
+        "youtrack": reset_youtrack_credentials,
+        "github": reset_github_credentials,
+        "all": reset_all_credentials
+    }
+
+    reset = interfaces[interface]
+    reset()
+
+
 def reset_aws_credentials():
     key = input("User: ")
     secret = getpass.getpass("Password: ")
@@ -41,17 +53,14 @@ def reset_github_credentials():
     set_config_file(AlfredConfig(github_username=github_username, github_password=github_password))
 
 
-def reset_everything():
+def reset_all_credentials():
     reset_aws_credentials()
     reset_youtrack_credentials()
     reset_github_credentials()
 
 
 def config_file_exists():
-    if config_location.is_file():
-        return True
-    else:
-        return False
+    return config_location.is_file()
 
 
 def set_config_file(user_config):

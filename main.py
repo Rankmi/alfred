@@ -5,8 +5,7 @@
 import click
 
 from services.awsservice import get_backup, dumpbackup
-from alfred.configfilehelper import config_file_exists, reset_aws_credentials, reset_youtrack_credentials, \
-    reset_github_credentials, reset_everything
+from alfred.configfilehelper import config_file_exists, reset_credentials
 from services.githubservice import create_repo, create_branch, create_pr
 from services.youtrackservice import get_issues_by_state, get_issue_by_id
 from alfred.printer import print_issue, print_issue_list
@@ -23,25 +22,13 @@ def greet():
 @click.option('--delete', is_flag=True)
 @click.argument('database_date')
 def get(database_date, out, extract, delete):
-    if config_file_exists():
-        get_backup(database_date, out, extract, delete)
-    else:
-        reset_aws_credentials()
+    get_backup(database_date, out, extract, delete) if config_file_exists() else reset_credentials("aws")
 
 
 @greet.command()
 @click.argument("interface")
 def reset(interface):
-    if interface == "aws":
-        reset_aws_credentials()
-    elif interface == "youtrack":
-        reset_youtrack_credentials()
-    elif interface == "github":
-        reset_github_credentials()
-    elif interface == "all":
-        reset_everything()
-    else:
-        print("No conozco esa opción")
+    reset_credentials(interface)
 
 
 @greet.command()
@@ -54,28 +41,6 @@ def tasks(state):
 @click.argument('issue')
 def issue(issue):
     print_issue(get_issue_by_id(issue))
-
-
-@greet.command()
-@click.argument("name")
-def repo(name):
-    create_repo(name)
-
-
-@greet.command()
-@click.argument('name')
-@click.option('--hotfix', '-h', is_flag=True)
-def branch(hotfix, name):
-    if hotfix:
-        create_branch('master', name)
-    else:
-        create_branch('development', name)
-
-
-@greet.command()
-@click.option('--hotfix', '-h', is_flag=True)
-def pr(hotfix):
-    create_pr('master' if hotfix else 'develop')
 
 
 @greet.command()
