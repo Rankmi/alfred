@@ -41,14 +41,15 @@ def create_pr(compare):
     g = get_github_instance()
     org = g.get_organization(ORGANIZATION)
     
-    rama = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])[:-1].decode("utf-8")
-    titulo = "[" + rama.split('/')[0] +  "] " + rama.split('/')[1].replace("-", " ")
+    currentBranch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])[:-1].decode("utf-8")
+    prTitle = "[" + currentBranch[:8] +  "] " + currentBranch[9:].replace("-", " ")
     folder = os.getcwd().split("/")[-1]
 
     if is_folder_github_repo(folder):
         repo = org.get_repo(folder)
-        print("Pull request creado. Puedes revisarlo en:",
-              repo.create_pull(title=titulo, body="", base=compare, head="Rankmi:" + rama).html_url)
+        prUrl = repo.create_pull(title=prTitle, body="", base=compare, head="Rankmi:" + currentBranch).html_url
+        print("Pull request creado. Puedes revisarlo en:", prUrl)
+        return prUrl
     
     else:
         print("Para crear un Pull request debes localizarte en un repositorio válido.")

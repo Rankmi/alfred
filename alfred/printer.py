@@ -1,6 +1,7 @@
 from services.youtrackservice import get_issue_by_id, change_issue_state
 from services.githubservice import create_branch
 from services.issueclasses import Issue
+from alfred.issueupdater import update_issue, STATES
 
 HEADER = '\033[96m'
 GREEN = '\033[92m'
@@ -29,8 +30,8 @@ def print_issue(issue):
         print("- "+ BOLD + field + ENDC +":", issue.assignees.listedAssignees[field])
     print("--------------------------------------------------------------------------")
 
-    if issue.state.lower() == "por hacer":
-        start_issue(issue)
+    if issue.state == STATES["todo"]:
+        update_issue("start", issue)
 
 
 def print_issue_list(issues):
@@ -52,13 +53,3 @@ def print_issue_list(issues):
             print("Debes ingresar un índice válido.")
     else:
         print(BOLD + "No tienes tickets para revisar en este estado." + ENDC)
-
-
-def start_issue(issue):
-    initializeIssue = input(CRITICAL + BOLD + "Deseas comenzar esta tarea [y/n]: " + ENDC)
-    if initializeIssue == "y":
-        change_issue_state(issue.id, "En progreso")
-        print(HEADER + BOLD + "Estado de la tarea fue cambiado a 'En progreso'" + ENDC)
-        createBranch = input(CRITICAL + BOLD + "Deseas crear una rama para esta tarea [y/n]: " + ENDC)
-        if createBranch == "y":
-            create_branch('master' if issue.priority == "Show-stopper" else 'development', issue.branch)
