@@ -18,4 +18,4 @@ def delete(filepath):
     if Path(filepath).is_file():
         os.remove(filepath)
     else:
-        print(f"No existe el archivo {filepath}")
+        print("No existe el archivo", filepath)
