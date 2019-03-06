@@ -15,3 +15,6 @@ __pycache__/
 *.tar
 *.sql
 *.xz
+build/
+dist/
+*.spec
