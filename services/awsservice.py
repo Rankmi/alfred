@@ -1,9 +1,12 @@
-import boto3
 import datetime
+
+import boto3
 import botocore
 from tqdm import tqdm
-from alfred.configfilehelper import readconfig
-from alfred.filehelper import uncompress, delete
+
+from alfred.configfilehelper import get_config_key, AWS_SECTION, USER_KEY, reset_aws_credentials, PASS_KEY, \
+    AWS_BUCKET_SECTION, AWS_BUCKET_KEY
+from alfred.filehelper import uncompress
 
 
 def hook(t):
@@ -31,19 +34,21 @@ def get_backup(key, destination_file=None, uncompress_file=False, delete_after_e
 
 
 def download_file(destination_file, aws_file):
-    awsconfig = readconfig()
+    aws_access_key = get_aws_access_key()
+    aws_secret = get_aws_access_secret()
+    aws_bucket = get_aws_bucket()
 
     resource = boto3.resource('s3', region_name='us-west-2',
-                              aws_access_key_id=awsconfig.key,
-                              aws_secret_access_key=awsconfig.secret)
+                              aws_access_key_id=aws_access_key,
+                              aws_secret_access_key=aws_secret)
 
-    fileobject = resource.Object(awsconfig.bucket, aws_file)
+    fileobject = resource.Object(aws_bucket, aws_file)
     try:
         print('Starting Download')
         filesize = fileobject.content_length
         with tqdm(total=filesize, unit='B', unit_scale=True,
                   desc=destination_file) as t:
-            resource.Bucket(awsconfig.bucket).download_file(aws_file, destination_file, Callback=hook(t))
+            resource.Bucket(aws_bucket).download_file(aws_file, destination_file, Callback=hook(t))
         return True
     except botocore.exceptions.ParamValidationError as e:
         print("El bucket no tiene el nombre correcto. Resetea tus credenciales" +
@@ -52,17 +57,22 @@ def download_file(destination_file, aws_file):
     except botocore.exceptions.ClientError as e:
         print("Error " + e.response['Error']['Code'])
         exit()
+    except ValueError:
+        print("No se pudo descargar el archivo por problemas de conectividad")
+        exit()
 
 
 def dumpbackup(key):
-    awsconfig = readconfig()
+    aws_access_key = get_aws_access_key()
+    aws_secret = get_aws_access_secret()
+
     if (key == 'production') or (key == 'staging') or (key == 'development'):
         # revisar si la maquina esta encendida, si lo esta solicitar intentar nuevamente, sino lo esta entonces encender
         print('Batman, the dump of the ' + key + ' environment is starting...')
         instances = ['i-0b08005bfb8829080']
         resource = boto3.client('ec2', region_name='us-west-2',
-                                aws_access_key_id=awsconfig.key,
-                                aws_secret_access_key=awsconfig.secret)
+                                aws_access_key_id=aws_access_key,
+                                aws_secret_access_key=aws_secret)
         status = resource.describe_instance_status(InstanceIds=instances)
         if not status.get("InstanceStatuses"):
             print("Starting dump... Batman should wait aprox 30min to complete this asynchronous task...")
@@ -71,8 +81,8 @@ def dumpbackup(key):
             print("--->>>> main.py get " + key + "_DD_MM_YY")
             print("")
             s3 = boto3.resource('s3', region_name='us-west-2',
-                                aws_access_key_id=awsconfig.key,
-                                aws_secret_access_key=awsconfig.secret)
+                                aws_access_key_id=aws_access_key,
+                                aws_secret_access_key=aws_secret)
             object = s3.Object('rankmi-backup-semanal', 'backup-type.dat')
             object.put(Body=key)
             resource.start_instances(InstanceIds=instances)
@@ -80,3 +90,30 @@ def dumpbackup(key):
             print("Hay otro Dump en proceso, por favor intentende nuevo en unos minutos...")
     else:
         print('Batman, debes indicar el ambiente correctamente...')
+
+
+def get_aws_access_key():
+    aws_access_key = get_config_key(AWS_SECTION, USER_KEY)
+    if aws_access_key is not None:
+        return aws_access_key
+    else:
+        reset_aws_credentials()
+        return get_config_key(AWS_SECTION, USER_KEY)
+
+
+def get_aws_access_secret():
+    aws_access_secret = get_config_key(AWS_SECTION, PASS_KEY)
+    if aws_access_secret is not None:
+        return aws_access_secret
+    else:
+        reset_aws_credentials()
+        return get_config_key(AWS_SECTION, PASS_KEY)
+
+
+def get_aws_bucket():
+    aws_bucket = get_config_key(AWS_BUCKET_SECTION, AWS_BUCKET_KEY)
+    if aws_bucket is not None:
+        return aws_bucket
+    else:
+        reset_aws_credentials()
+        return get_config_key(AWS_BUCKET_SECTION, AWS_BUCKET_KEY)
