@@ -9,6 +9,7 @@ from alfred.configfilehelper import config_file_exists, reset_credentials
 from services.githubservice import create_repo, create_branch, create_pr
 from services.youtrackservice import get_issues_by_state, get_issue_by_id
 from alfred.printer import print_issue, print_issue_list
+from alfred.issueupdater import update_issue
 
 
 @click.group()
@@ -35,6 +36,12 @@ def reset(interface):
 @click.argument("state")
 def tasks(state):
     print_issue_list(get_issues_by_state(state))
+
+
+@greet.command()
+@click.argument("action")
+def task(action):
+    update_issue(action)
 
 
 @greet.command()
