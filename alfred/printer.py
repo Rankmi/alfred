@@ -1,14 +1,7 @@
-from services.youtrackservice import get_issue_by_id, change_issue_state
-from services.githubservice import create_branch
-from services.issueclasses import Issue
 from alfred.issueupdater import update_issue, STATES
+from alfred.colors import HEADER, BOLD, ENDC, GREEN, SHOWSTOPPER, CRITICAL
+from services.youtrackservice import get_issue_by_id
 
-HEADER = '\033[96m'
-GREEN = '\033[92m'
-SHOWSTOPPER = '\033[91m'
-CRITICAL = '\033[93m'
-ENDC = '\033[0m'
-BOLD = '\033[1m'
 
 def print_issue(issue):
 
