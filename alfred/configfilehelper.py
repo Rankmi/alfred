@@ -11,7 +11,6 @@ __config_filename = '.alfred.conf'
 config_location = Path(join(str(Path.home()), __config_filename))
 
 AWS_SECTION = "AWS"
-AWS_BUCKET_SECTION = "DIARIOS"
 GITHUB_SECTION = "GITHUB"
 YOUTRACK_SECTION = "YOUTRACK"
 
@@ -39,7 +38,7 @@ def reset_aws_credentials():
     bucket = input("Bucket (default = rankmi-backup-semanal) : ")
     if not bucket:
         bucket = "rankmi-backup-semanal"
-    set_config_file(AlfredConfig(key, secret, bucket))
+    set_config_file(AlfredConfig(user=key, password=secret, bucket=bucket))
 
 
 def reset_youtrack_credentials():
@@ -67,23 +66,19 @@ def config_file_exists():
 def set_config_file(user_config):
     config = configparser.ConfigParser()
     config.optionxform = str
-    config[AWS_SECTION] = {}
-    if user_config.user is not None:
+    config.read(config_location)
+    if user_config.user and user_config.password:
+        config[AWS_SECTION] = {}
         config[AWS_SECTION][USER_KEY] = user_config.user
-    if user_config.password is not None:
         config[AWS_SECTION][PASS_KEY] = user_config.password
-    config[AWS_BUCKET_SECTION] = {}
-    if user_config.bucket is not None:
-        config[AWS_BUCKET_SECTION][AWS_BUCKET_KEY] = user_config.bucket
-    config[YOUTRACK_SECTION] = {}
-    if user_config.youtrack_token is not None:
+        config[AWS_SECTION][AWS_BUCKET_KEY] = user_config.bucket
+    if user_config.youtrack_token and user_config.youtrack_username:
+        config[YOUTRACK_SECTION] = {}
         config[YOUTRACK_SECTION][YOUTRACK_KEY] = user_config.youtrack_token
-    if user_config.youtrack_username is not None:
         config[YOUTRACK_SECTION][USER_KEY] = user_config.youtrack_username
-    config[GITHUB_SECTION] = {}
-    if user_config.github_username is not None:
+    if user_config.github_username and user_config.github_password:
+        config[GITHUB_SECTION] = {}
         config[GITHUB_SECTION][USER_KEY] = user_config.github_username
-    if user_config.github_password is not None:
         config[GITHUB_SECTION][PASS_KEY] = user_config.github_password
 
     with open(str(config_location), "w+") as file:

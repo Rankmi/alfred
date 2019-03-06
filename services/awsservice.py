@@ -5,7 +5,7 @@ import botocore
 from tqdm import tqdm
 
 from alfred.configfilehelper import get_config_key, AWS_SECTION, USER_KEY, reset_aws_credentials, PASS_KEY, \
-    AWS_BUCKET_SECTION, AWS_BUCKET_KEY
+    AWS_BUCKET_KEY
 from alfred.filehelper import uncompress
 
 
@@ -111,9 +111,9 @@ def get_aws_access_secret():
 
 
 def get_aws_bucket():
-    aws_bucket = get_config_key(AWS_BUCKET_SECTION, AWS_BUCKET_KEY)
+    aws_bucket = get_config_key(AWS_SECTION, AWS_BUCKET_KEY)
     if aws_bucket is not None:
         return aws_bucket
     else:
         reset_aws_credentials()
-        return get_config_key(AWS_BUCKET_SECTION, AWS_BUCKET_KEY)
+        return get_config_key(AWS_SECTION, AWS_BUCKET_KEY)
