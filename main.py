@@ -4,12 +4,11 @@
 
 import click
 
-from services.awsservice import get_backup, dumpbackup
 from alfred.configfilehelper import config_file_exists, reset_credentials
-from services.githubservice import create_repo, create_branch, create_pr
-from services.youtrackservice import get_issues_by_state, get_issue_by_id
-from alfred.printer import print_issue, print_issue_list
 from alfred.issueupdater import update_issue
+from alfred.printer import print_issue, print_issue_list
+from services.awsservice import get_backup, dumpbackup
+from services.youtrackservice import get_issues_by_state, get_issue_by_id
 
 
 @click.group()
@@ -23,7 +22,7 @@ def greet():
 @click.option('--delete', is_flag=True)
 @click.argument('database_date')
 def get(database_date, out, extract, delete):
-    get_backup(database_date, out, extract, delete) if config_file_exists() else reset_credentials("aws")
+    get_backup(database_date, out, extract, delete)
 
 
 @greet.command()

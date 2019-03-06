@@ -8,7 +8,7 @@ from services.issueclasses import Issue, Context, Assignees
 
 __base_url = "https://rankmi.myjetbrains.com/youtrack/api/"
 
-STATES = { 
+STATES = {
     "todo": "#{Por hacer}",
     "prog": "#{En progreso}",
     "cr": "#{Para CodeReview}",
@@ -18,7 +18,7 @@ STATES = {
     "accepted": "#{Aceptado}",
     "rejected": "#{Rechazado}",
     "open": "#Unresolved"
-    }
+}
 
 
 def get_issues_by_state(state):
@@ -29,10 +29,12 @@ def get_issues_by_state(state):
     request_url = __base_url + "issues"
     user_request = requests.get(request_url, headers=get_header(), params=params)
     user_list = json.loads(user_request.text)
-    
-    issues = [Issue(issue) for issue in user_list if Issue(issue).state not in ["Archivado", "Backlog"]]
-    
-    return issues
+    if user_request.ok:
+        issues = [Issue(issue) for issue in user_list if Issue(issue).state not in ["Archivado", "Backlog"]]
+        return issues
+    else:
+        print("Error:", user_request.status_code)
+        exit()
 
 
 def get_issue_by_id(id):
@@ -43,9 +45,12 @@ def get_issue_by_id(id):
     else:
         request_url = __base_url + "issues/" + id
     user_request = requests.get(request_url, headers=get_header(), params=params)
-    fields = json.loads(user_request.text)
-
-    return Issue(fields, complete=True)
+    if user_request.ok:
+        fields = json.loads(user_request.text)
+        return Issue(fields, complete=True)
+    else:
+        print("Error:", user_request.status_code)
+        exit()
 
 
 def change_issue_state(id, state):
@@ -54,7 +59,12 @@ def change_issue_state(id, state):
     else:
         request_url = "https://rankmi.myjetbrains.com/youtrack/rest/issue/" + id + "/execute?command=State+" + state
 
-    return requests.post(request_url, headers=get_header())
+    response = requests.post(request_url, headers=get_header())
+    if response.ok:
+        return response
+    else:
+        print("Error:", response.status_code)
+        exit()
 
 
 def get_youtrack_user():
