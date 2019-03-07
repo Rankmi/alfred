@@ -5,7 +5,7 @@ import requests
 
 from alfred.colors import HEADER, BOLD, CRITICAL, GREEN, ENDC
 from services.githubservice import create_pr, create_branch
-from services.youtrackservice import get_issue_by_id, change_issue_state, get_header
+from services.youtrackservice import get_issue_by_id, execute_command, get_header
 
 STATES = {
     "todo": "Por hacer",
@@ -32,7 +32,7 @@ def update_issue(action, issue=None):
 def start_issue(issue):
     initializeIssue = input(CRITICAL + BOLD + "Deseas comenzar esta tarea [y/n]: " + ENDC)
     if initializeIssue == "y":
-        change_issue_state(issue.id, STATES["prog"])
+        execute_command(issue, "State", STATES["prog"])
         print(HEADER + BOLD + "Estado de la tarea fue cambiado a 'En progreso'" + ENDC)
         createBranch = input(CRITICAL + BOLD + "Deseas crear una rama para esta tarea [y/n]: " + ENDC)
         if createBranch == "y":
@@ -44,18 +44,16 @@ def finish_issue():
     print(HEADER + BOLD + "Finalizando etapa de desarrollo de", issue.id + ENDC)
 
     prUrl = create_pr('master' if issue.priority == 'Show-stopper' else 'development')
-    currentDescription = issue.context.description
-    prDescription = currentDescription + "\n\nPR " + os.getcwd().split("/")[-1].upper() + ": " + prUrl
-    request_url = "https://rankmi.myjetbrains.com/youtrack/api/issues/" + issue.id + "?fields=description"
-
-    change_issue_state(issue.id, STATES["cr"])
+    execute_command(issue, "State", STATES["cr"])
     print(BOLD + "Tarea actualizada a " + GREEN + "'Para CodeReview'" + ENDC)
 
-    return requests.post(request_url, headers=get_header(), data={'description': prDescription})
+    currentDescription = issue.context.description if issue.context.description else ""
+    prDescription = currentDescription + "\n\nPR " + os.getcwd().split("/")[-1].upper() + ": " + prUrl
+    request_url = "https://rankmi.myjetbrains.com/youtrack/api/issues/" + issue.id + "?fields=description"
+    return requests.post(request_url, headers=get_header(), json={'description': prDescription})
 
 
 def recognize_current_issue():
     currentBranch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])[:-1].decode("utf-8")
     issueId = currentBranch.split("-")[0] + "-" + currentBranch.split("-")[1]
-    print(issueId)
     return get_issue_by_id(issueId)
