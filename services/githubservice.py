@@ -1,5 +1,6 @@
 import os
 import subprocess
+from sys import exit
 from github import Github, GithubException
 
 from alfred.configfilehelper import get_config_key, USER_KEY, GITHUB_SECTION, PASS_KEY, reset_github_credentials
