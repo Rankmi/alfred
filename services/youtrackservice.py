@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
+from sys import exit
 
 from alfred.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
     reset_youtrack_credentials
@@ -53,17 +54,14 @@ def get_issue_by_id(id):
         exit()
 
 
-def change_issue_state(id, state):
-    if id.isdigit():
-        request_url = "https://rankmi.myjetbrains.com/youtrack/rest/issue/RKM-" + id + "/execute?command=State+" + state
-    else:
-        request_url = "https://rankmi.myjetbrains.com/youtrack/rest/issue/" + id + "/execute?command=State+" + state
+def execute_command(issue, field, value):
+    request_url = "https://rankmi.myjetbrains.com/youtrack/rest/issue/" + issue.id + "/execute?command=" + field + "+" + value
+    user_request = requests.post(request_url, headers=get_header())
 
-    response = requests.post(request_url, headers=get_header())
-    if response.ok:
-        return response
+    if user_request.ok:
+        return user_request
     else:
-        print("Error:", response.status_code)
+        print("Error:", user_request.status_code)
         exit()
 
 
@@ -79,7 +77,7 @@ def get_youtrack_user():
 
 def get_header():
     y_key = get_config_key(YOUTRACK_SECTION, YOUTRACK_KEY)
-    if y_key is not None:
+    if y_key:
         return dict(Authorization=f"Bearer {y_key}")
     else:
         print("No has ingresado tus credenciales de youtrack")
