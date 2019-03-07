@@ -1,4 +1,5 @@
 import datetime
+from sys import exit
 
 import boto3
 import botocore
