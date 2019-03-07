@@ -43,12 +43,21 @@ def create_branch(base, name):
                 print(e)
                 exit()
 
-        
         subprocess.run(["git", "fetch", "--all"])
         subprocess.run(["git", "checkout", name])
 
     else:
         print("Debes localizarte en un repositorio válido.")
+
+
+def delete_branch(branch):
+    org = get_github_instance()
+    folder = os.getcwd().split("/")[-1]
+    repo = org.get_repo(folder)
+    repo.get_git_ref(ref='heads/' + branch).delete()
+    subprocess.run(["git", "checkout", "development"])
+    subprocess.run(["git", "branch", "-D", branch])
+    subprocess.run(["git", "pull"])
 
 
 def create_pr(compare):
