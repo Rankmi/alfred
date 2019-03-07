@@ -18,7 +18,7 @@ STATES = {
     "review": "#{En Review}",
     "accepted": "#{Aceptado}",
     "rejected": "#{Rechazado}",
-    "open": "#Unresolved"
+    "list": "#Unresolved"
 }
 
 
@@ -34,7 +34,7 @@ def get_issues_by_state(state):
         issues = [Issue(issue) for issue in user_list if Issue(issue).state not in ["Archivado", "Backlog"]]
         return issues
     else:
-        print("Error:", user_request.status_code)
+        print("Error:", user_request.status_code, "on get_issues_by_state")
         exit()
 
 
@@ -50,7 +50,7 @@ def get_issue_by_id(id):
         fields = json.loads(user_request.text)
         return Issue(fields, complete=True)
     else:
-        print("Error:", user_request.status_code)
+        print("Error:", user_request.status_code, "on get_issue_by_id")
         exit()
 
 
@@ -61,7 +61,7 @@ def execute_command(issue, field, value):
     if user_request.ok:
         return user_request
     else:
-        print("Error:", user_request.status_code)
+        print("Error:", user_request.status_code, "on execute_command")
         exit()
 
 
