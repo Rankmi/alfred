@@ -33,8 +33,12 @@ def print_issue_list(issues):
 
     for issue in issues:
         space = "\t" if issue.priority in ["Minor", "Major"] else ""
-        color = SHOWSTOPPER + BOLD if issue.priority == "Show-stopper" else ""
-        color = CRITICAL + BOLD if issue.priority == "Critical" else ""
+        if issue.priority == "Show-stopper":
+            color = SHOWSTOPPER + BOLD
+        elif issue.priority == "Critical":
+            color = CRITICAL + BOLD
+        else:
+            color = ""
         print(color + "[" + str(index) + "] \t", issue.priority, "\t"+space, issue.summary + ENDC)
         index += 1
 
