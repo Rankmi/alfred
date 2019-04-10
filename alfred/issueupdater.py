@@ -86,8 +86,9 @@ def move_issue(action):
     issue = recognize_current_issue()
     execute_command(issue, "State", STATES[action])
     print(BOLD + "Estado de la tarea fue cambiado a '" + GREEN + STATES[action] + "'" + ENDC)
-    subprocess.run(["git", "checkout", "development"])
-    subprocess.run(["git", "pull", "origin", "development"])
+    if action != 'review':
+        subprocess.run(["git", "checkout", "development"])
+        subprocess.run(["git", "pull", "origin", "development"])
 
 
 def recognize_current_issue():
