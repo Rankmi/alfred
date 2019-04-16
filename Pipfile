@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pyinstaller = "*"
 
 [packages]
 tqdm = "*"
@@ -11,4 +12,3 @@ click = "*"
 requests = "*"
 boto3 = "*"
 pygithub = "*"
-

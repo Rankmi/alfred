@@ -1,5 +1,5 @@
-from alfred.issueupdater import update_issue, STATES
-from alfred.colors import HEADER, BOLD, ENDC, GREEN, SHOWSTOPPER, CRITICAL
+from helpers.issueupdater import update_issue, STATES
+from helpers.colors import HEADER, BOLD, ENDC, GREEN, SHOWSTOPPER, CRITICAL
 from services.youtrackservice import get_issue_by_id
 
 
