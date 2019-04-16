@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""alfred is your friend, helpers is your god, helpers is nothing
+"""alfred is your friend, alfred is your god, alfred is nothing
 """
 
 import click
