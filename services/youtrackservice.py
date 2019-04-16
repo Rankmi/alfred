@@ -3,7 +3,7 @@ import json
 import requests
 from sys import exit
 
-from alfred.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
+from helpers.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
     reset_youtrack_credentials
 from services.issueclasses import Issue, Context, Assignees
 
@@ -78,7 +78,7 @@ def get_youtrack_user():
 def get_header():
     y_key = get_config_key(YOUTRACK_SECTION, YOUTRACK_KEY)
     if y_key:
-        return dict(Authorization=f"Bearer {y_key}")
+        return dict(Authorization="Bearer "+y_key)
     else:
         print("No has ingresado tus credenciales de youtrack")
         reset_youtrack_credentials()
