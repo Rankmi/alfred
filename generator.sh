@@ -18,8 +18,8 @@ case ${machine} in
             if [ "$1" == "ins" ]; then
                 echo "Installing dependencies for Linux."
                 echo "----------------------------------------------------"
-                sudo apt update
-                sudo apt install glibc libc-bin binutils
+                apt update
+                apt install -y glibc libc-bin binutils
                 pipenv install -d pyinstaller
                 echo "----------------------------------------------------"
             fi

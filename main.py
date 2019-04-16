@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
-"""alfred is your friend, alfred is your god, alfred is nothing
+"""alfred is your friend, helpers is your god, helpers is nothing
 """
 
 import click
-
-from alfred.configfilehelper import config_file_exists, reset_credentials
-from alfred.issueupdater import update_issue
-from alfred.printer import print_issue, print_issue_list
+from _version import __version__
+from helpers.configfilehelper import reset_credentials
+from helpers.issueupdater import update_issue
+from helpers.printer import print_issue, print_issue_list
 from services.awsservice import get_backup, dumpbackup
 from services.youtrackservice import get_issues_by_state, get_issue_by_id
+from services.githubservice import create_release, upload_asset, download_last_release
 
 
-@click.group()
-def greet():
-    pass
+@click.group(invoke_without_command=True)
+@click.option('--version', '-v', is_flag=True)
+def greet(version):
+    if version:
+        click.echo("alfred v" + __version__)
 
 
 @greet.command()
@@ -29,6 +32,15 @@ def get(database_date, out, extract, delete):
 @click.argument("interface")
 def reset(interface):
     reset_credentials(interface)
+
+
+@greet.command()
+@click.argument("action")
+def release(action):
+    if action == "new":
+        upload_asset(create_release())
+    elif action == "download":
+        download_last_release()
 
 
 @greet.command()

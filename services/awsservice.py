@@ -5,9 +5,9 @@ import boto3
 import botocore
 from tqdm import tqdm
 
-from alfred.configfilehelper import get_config_key, AWS_SECTION, USER_KEY, reset_aws_credentials, PASS_KEY, \
+from helpers.configfilehelper import get_config_key, AWS_SECTION, USER_KEY, reset_aws_credentials, PASS_KEY, \
     AWS_BUCKET_KEY
-from alfred.filehelper import uncompress
+from helpers.filehelper import uncompress
 
 
 def hook(t):
