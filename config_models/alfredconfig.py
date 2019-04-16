@@ -6,7 +6,8 @@ class AlfredConfig:
                  youtrack_token=None,
                  youtrack_username=None,
                  github_username=None,
-                 github_password=None):
+                 github_password=None,
+                 github_token=None):
         self.user = user
         self.password = password
         self.bucket = bucket
@@ -14,3 +15,4 @@ class AlfredConfig:
         self.youtrack_username = youtrack_username
         self.github_username = github_username
         self.github_password = github_password
+        self.github_token = github_token
