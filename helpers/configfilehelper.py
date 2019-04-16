@@ -2,13 +2,12 @@
 import configparser
 import getpass
 from configparser import ConfigParser
-from os.path import join
-from pathlib import Path
+from os.path import expanduser
 
 from config_models.alfredconfig import AlfredConfig
 
 __config_filename = '.alfred.conf'
-config_location = Path(join(str(Path.home()), __config_filename))
+config_location = str(expanduser("~") + "/" + __config_filename)
 
 AWS_SECTION = "AWS"
 GITHUB_SECTION = "GITHUB"
