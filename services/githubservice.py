@@ -7,7 +7,8 @@ from sys import exit
 from github import Github, GithubException
 from tqdm import tqdm
 
-from helpers.configfilehelper import get_config_key, USER_KEY, GITHUB_SECTION, PASS_KEY, reset_github_credentials
+from helpers.configfilehelper import get_config_key, reset_github_credentials,\
+                                     GITHUB_SECTION, USER_KEY, PASS_KEY, GH_TOKEN
 from _version import __version__
 
 ORGANIZATION = "Rankmi"
@@ -88,20 +89,23 @@ def create_pr(compare):
 
 
 def create_release():
+    token = 'token ' + get_token()
     last_release = get_last_release()
+
     if last_release['tag_name'] == __version__:
         print("There already is a release for version " + __version__)
         return last_release['upload_url'][:-13]
 
     response = requests.post(url="https://api.github.com/repos/Rankmi/alfred/releases",
                              json={"tag_name": __version__},
-                             headers={'Authorization': 'token 682b9cdb5bd948ebf4524c07b9676b297f6b6401'})
+                             headers={'Authorization': token})
 
     print("Release created: v" + __version__)
     return response.json()['upload_url'][:-13]
 
 
 def upload_asset(upload_url):
+    token = 'token ' + get_token()
     file = open('dist/alfred', 'rb').read()
 
     if platform.system() == "Darwin":
@@ -113,7 +117,7 @@ def upload_asset(upload_url):
 
     response = requests.post(upload_url,
                              headers={
-                                 'Authorization': 'token 682b9cdb5bd948ebf4524c07b9676b297f6b6401',
+                                 'Authorization': token,
                                  'Content-Type': 'application/octet-stream'
                              },
                              params=name,
@@ -127,11 +131,13 @@ def upload_asset(upload_url):
 
 
 def download_last_release():
+    token = 'token ' + get_token()
+
     last_release = str(get_last_release()['id'])
 
     asset = requests.get('https://api.github.com/repos/Rankmi/alfred/releases/' + last_release,
                          headers={
-                             'Authorization': 'token 682b9cdb5bd948ebf4524c07b9676b297f6b6401'
+                             'Authorization': token
                          })
 
     for asset in asset.json()['assets']:
@@ -142,7 +148,7 @@ def download_last_release():
 
     file = requests.get(asset_url,
                         headers={
-                            'Authorization': 'token 682b9cdb5bd948ebf4524c07b9676b297f6b6401',
+                            'Authorization': token,
                             'Accept': 'application/octet-stream'
                         },
                         stream=True)
@@ -154,8 +160,12 @@ def download_last_release():
 
 
 def get_last_release():
-    auth = 'rodrigonp:682b9cdb5bd948ebf4524c07b9676b297f6b6401@'
-    response = requests.get("https://" + auth + "api.github.com/repos/Rankmi/alfred/releases")
+    token = 'token ' + get_token()
+
+    response = requests.get("https://api.github.com/repos/Rankmi/alfred/releases",
+                            headers={
+                                'Authorization': token
+                            })
 
     return response.json()[0]
 
@@ -183,3 +193,12 @@ def get_password():
     else:
         reset_github_credentials()
         return get_config_key(GITHUB_SECTION, PASS_KEY)
+
+
+def get_token():
+    token = get_config_key(GITHUB_SECTION, GH_TOKEN)
+    if token:
+        return token
+    else:
+        reset_github_credentials()
+        return get_config_key(GITHUB_SECTION, GH_TOKEN)
