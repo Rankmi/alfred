@@ -3,7 +3,7 @@ import subprocess
 
 import requests
 
-from alfred.colors import HEADER, BOLD, CRITICAL, GREEN, ENDC
+from helpers.colors import HEADER, BOLD, CRITICAL, GREEN, ENDC
 from services.githubservice import create_pr, create_branch, delete_branch
 from services.youtrackservice import get_issue_by_id, execute_command, get_header
 
