@@ -153,7 +153,6 @@ def download_last_release():
                         },
                         stream=True)
 
-
     with open("alfred", 'wb') as f:
         shutil.copyfileobj(file.raw, f)
 
