@@ -44,6 +44,11 @@ def release(action):
 
 
 @greet.command()
+def update():
+    update_
+
+
+@greet.command()
 @click.argument("state")
 def tasks(state):
     print_issue_list(get_issues_by_state(state))
