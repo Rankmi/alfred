@@ -9,7 +9,7 @@ from helpers.issueupdater import update_issue
 from helpers.printer import print_issue, print_issue_list
 from services.awsservice import get_backup, dumpbackup
 from services.youtrackservice import get_issues_by_state, get_issue_by_id
-from services.githubservice import create_release, upload_asset, download_last_release
+from services.githubservice import create_release, upload_asset, download_last_release, update_binary
 
 
 @click.group(invoke_without_command=True)
@@ -45,7 +45,7 @@ def release(action):
 
 @greet.command()
 def update():
-    update_
+    update_binary()
 
 
 @greet.command()
