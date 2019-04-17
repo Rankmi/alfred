@@ -153,10 +153,22 @@ def download_last_release():
                         },
                         stream=True)
 
+
     with open("alfred", 'wb') as f:
         shutil.copyfileobj(file.raw, f)
 
     return "alfred"
+
+
+def update_binary():
+    if __version__ == get_last_release()['tag_name']:
+        return "Your alfred version is up-to-date"
+
+    print("Downloading last binary realeased for " + platform.system())
+    download_last_release()
+
+    subprocess.run(["mv", "./alfred", "/usr/local/bin"])
+    return "alfred succesfully updated"
 
 
 def get_last_release():
