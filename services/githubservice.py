@@ -170,6 +170,17 @@ def get_last_release():
     return response.json()[0]
 
 
+def update_binary():
+    if __version__ == get_last_release()['tag_name']:
+        return "Your alfred version is up-to-date"
+
+    print("Downloading last binary realeased for " + platform.system())
+    download_last_release()
+
+    subprocess.run(["mv", "./alfred", "/usr/local/bin"])
+    return "alfred succesfully updated"
+
+
 def is_folder_github_repo(path=os.getcwd()):
     org = get_github_instance()
     repo_list = org.get_repos()
