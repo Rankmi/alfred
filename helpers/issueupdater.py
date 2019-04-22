@@ -6,6 +6,7 @@ import requests
 from helpers.colors import HEADER, BOLD, CRITICAL, GREEN, ENDC
 from services.githubservice import create_pr, create_branch, delete_branch
 from services.youtrackservice import get_issue_by_id, execute_command, get_header
+from helpers.configfilehelper import GLOBAL_SECTION, YT_URL
 
 STATES = {
     "todo": "Por hacer",
@@ -45,20 +46,20 @@ def start_issue(issue):
         print(BOLD + "Estado de la tarea fue cambiado a 'En progreso'" + ENDC)
         generate_branch = input(CRITICAL + BOLD + "Deseas crear una rama para esta tarea [y/n]: " + ENDC)
         if generate_branch == "y":
-            create_branch('master' if issue.priority == "Show-stopper" else 'development', issue.branch)
+            create_branch('master' if issue.priority in ["ShowStopper", "Blocker"] else 'development', issue.branch)
 
 
 def finish_issue():
     issue = recognize_current_issue()
     print(HEADER + BOLD + "Finalizando etapa de desarrollo de", issue.id + ENDC)
 
-    pr_url = create_pr('master' if issue.priority == 'Show-stopper' else 'development')
+    pr_url = create_pr('master' if issue.priority in ["ShowStopper", "Blocker"] else 'development')
     execute_command(issue, "State", STATES["cr"])
     print(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Para CodeReview'" + ENDC)
 
     current_description = issue.context.description if issue.context.description else ""
     pr_description = current_description + "\n\nPR " + os.getcwd().split("/")[-1].title() + ":\n" + pr_url
-    request_url = "https://rankmi.myjetbrains.com/youtrack/api/issues/" + issue.id + "?fields=description"
+    request_url = YT_URL + "issues/" + issue.id + "?fields=description"
     user_request = requests.post(request_url, headers=get_header(), json={'description': pr_description})
     print(HEADER + BOLD + "Pullrequest agregado a descripción del ticket" + ENDC)
 
@@ -72,7 +73,7 @@ def accept_issue():
     issue = recognize_current_issue()
     print(HEADER + BOLD + "Finalizando etapa de QA de", issue.id + ENDC)
 
-    if issue.priority == 'Show-stopper':
+    if issue.priority in ["ShowStopper", "Blocker"]:
         execute_command(issue, "State", STATES["production"])
         print(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Producción'" + ENDC)
     else:

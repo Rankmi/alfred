@@ -1,6 +1,7 @@
 from helpers.issueupdater import update_issue, STATES
 from helpers.colors import HEADER, BOLD, ENDC, GREEN, SHOWSTOPPER, CRITICAL
 from services.youtrackservice import get_issue_by_id
+from helpers.configfilehelper import get_config_key, GLOBAL_SECTION, YT_URL
 
 
 def print_issue(issue):
@@ -11,7 +12,7 @@ def print_issue(issue):
           "el", issue.context.created)
     print(HEADER + BOLD + issue.summary + ENDC)
     print("[" + issue.state + "]", "[" + issue.priority + "]")
-    print("Puedes revisarlo aqui: https://rankmi.myjetbrains.com/youtrack/issue/" + issue.id)
+    print("Puedes revisarlo aqui: " + get_config_key(GLOBAL_SECTION, YT_URL) + "/issue/" + issue.id)
     print("--------------------------------------------------------------------------")
 
     print(GREEN + BOLD + "Descripcion:" + ENDC)
@@ -28,18 +29,22 @@ def print_issue(issue):
 
 
 def print_issue_list(issues):
+
+    if issues == 400:
+        print("Debes ingresar un estado válido. Revisa la documentación en https://github.com/Rankmi/alfred.")
+        return 400
+
     issue_ids = [issue.id for issue in issues]
     index = 0
 
     for issue in issues:
-        space = "\t" if issue.priority in ["Minor", "Major"] else ""
-        if issue.priority == "Show-stopper":
+        if issue.priority == "ShowStopper":
             color = SHOWSTOPPER + BOLD
-        elif issue.priority == "Critical":
+        elif issue.priority == "Blocker":
             color = CRITICAL + BOLD
         else:
             color = ""
-        print(color + "[" + str(index) + "] \t", issue.priority, "\t"+space, issue.summary + ENDC)
+        print(color + "[" + str(index) + "] \t", issue.priority, "\t", issue.summary + ENDC)
         index += 1
 
     if len(issue_ids):
