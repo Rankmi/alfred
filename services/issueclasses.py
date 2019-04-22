@@ -1,5 +1,6 @@
 import datetime
 
+
 class Issue:
     def __init__(self, fields, complete=False):
         self.id = fields['project']['shortName'] + "-" + str(fields['numberInProject'])
