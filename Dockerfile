@@ -12,6 +12,6 @@ ARG gh_token
 ENV env_gh_token="Token = $gh_token"
 
 RUN echo "[GLOBAL]" > /root/.alfred.conf
-RUN echo "Token = "$env_gh_token >> /root/.alfred.conf
+RUN echo $env_gh_token >> /root/.alfred.conf
 
 RUN ./dist/alfred release new
