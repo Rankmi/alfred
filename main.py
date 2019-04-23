@@ -10,6 +10,7 @@ from helpers.printer import print_issue, print_issue_list
 from services.awsservice import get_backup, dumpbackup
 from services.youtrackservice import get_issues_by_state, get_issue_by_id
 from services.githubservice import create_release, upload_asset, download_last_release, update_binary
+from services.releaser import release_alfred
 
 
 @click.group(invoke_without_command=True)
@@ -41,6 +42,8 @@ def release(action):
         upload_asset(create_release())
     elif action == "download":
         download_last_release()
+    elif action[0] == "v":
+        release_alfred(action)
 
 
 @greet.command()
