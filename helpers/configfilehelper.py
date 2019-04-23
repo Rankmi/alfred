@@ -12,12 +12,14 @@ config_location = str(expanduser("~") + "/" + __config_filename)
 AWS_SECTION = "AWS"
 GITHUB_SECTION = "GITHUB"
 YOUTRACK_SECTION = "YOUTRACK"
+GLOBAL_SECTION = "GLOBAL"
 
 USER_KEY = "User"
 PASS_KEY = "Pass"
 YOUTRACK_KEY = "Key"
 AWS_BUCKET_KEY = "Bucket"
 GH_TOKEN = "Token"
+YT_URL = "BaseUrl"
 
 
 def reset_credentials(interface):
@@ -25,17 +27,22 @@ def reset_credentials(interface):
         "aws": reset_aws_credentials,
         "youtrack": reset_youtrack_credentials,
         "github": reset_github_credentials,
+        "global": reset_global_credentials,
         "all": reset_all_credentials
     }
+
+    if interface not in list(interfaces.keys()):
+        print("Debes ingresar un input válido. Revisa la documentación en https://github.com/Rankmi/alfred.")
+        return 400
 
     reset = interfaces[interface]
     reset()
 
 
 def reset_aws_credentials():
-    key = input("User: ")
-    secret = getpass.getpass("Password: ")
-    bucket = input("Bucket (default = rankmi-backup-semanal) : ")
+    key = input("AWS User: ")
+    secret = getpass.getpass("AWS Password: ")
+    bucket = input("AWS Bucket (default = rankmi-backup-semanal) : ")
     if not bucket:
         bucket = "rankmi-backup-semanal"
     set_config_file(AlfredConfig(user=key, password=secret, bucket=bucket))
@@ -50,9 +57,15 @@ def reset_youtrack_credentials():
 def reset_github_credentials():
     github_username = input("Github Username: ")
     github_password = getpass.getpass("Github Password: ")
+    set_config_file(AlfredConfig(github_username=github_username, github_password=github_password))
+
+
+def reset_global_credentials():
+    youtrack_url = input("Youtrack URL: ")
     github_token = input("Github Token: ")
-    set_config_file(AlfredConfig(github_username=github_username, github_password=github_password,
-                                 github_token=github_token))
+    if not youtrack_url:
+        youtrack_url = "https://youtrack.rankmi.com"
+    set_config_file(AlfredConfig(github_token=github_token, youtrack_url=youtrack_url))
 
 
 def reset_all_credentials():
@@ -82,7 +95,10 @@ def set_config_file(user_config):
         config[GITHUB_SECTION] = {}
         config[GITHUB_SECTION][USER_KEY] = user_config.github_username
         config[GITHUB_SECTION][PASS_KEY] = user_config.github_password
-        config[GITHUB_SECTION][GH_TOKEN] = user_config.github_token
+    if user_config.youtrack_url:
+        config[GLOBAL_SECTION] = {}
+        config[GLOBAL_SECTION][YT_URL] = user_config.youtrack_url
+        config[GLOBAL_SECTION][GH_TOKEN] = user_config.github_token
 
     with open(str(config_location), "w+") as file:
         config.write(file)

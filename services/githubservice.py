@@ -8,7 +8,7 @@ from github import Github, GithubException
 from tqdm import tqdm
 
 from helpers.configfilehelper import get_config_key, reset_github_credentials,\
-                                     GITHUB_SECTION, USER_KEY, PASS_KEY, GH_TOKEN
+                                     GITHUB_SECTION, USER_KEY, PASS_KEY, GLOBAL_SECTION, GH_TOKEN
 from _version import __version__
 
 ORGANIZATION = "Rankmi"
@@ -207,9 +207,9 @@ def get_password():
 
 
 def get_token():
-    token = get_config_key(GITHUB_SECTION, GH_TOKEN)
+    token = get_config_key(GLOBAL_SECTION, GH_TOKEN)
     if token:
         return token
     else:
         reset_github_credentials()
-        return get_config_key(GITHUB_SECTION, GH_TOKEN)
+        return get_config_key(GLOBAL_SECTION, GH_TOKEN)
