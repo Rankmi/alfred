@@ -6,7 +6,7 @@ import requests
 from helpers.colors import HEADER, BOLD, CRITICAL, GREEN, ENDC
 from services.githubservice import create_pr, create_branch, delete_branch
 from services.youtrackservice import get_issue_by_id, execute_command, get_header
-from helpers.configfilehelper import GLOBAL_SECTION, YT_URL
+from helpers.configfilehelper import GLOBAL_SECTION, YT_URL, get_config_key
 
 STATES = {
     "todo": "Por hacer",
@@ -59,7 +59,7 @@ def finish_issue():
 
     current_description = issue.context.description if issue.context.description else ""
     pr_description = current_description + "\n\nPR " + os.getcwd().split("/")[-1].title() + ":\n" + pr_url
-    request_url = YT_URL + "issues/" + issue.id + "?fields=description"
+    request_url = get_config_key(GLOBAL_SECTION, YT_URL) + "/api/issues/" + issue.id + "?fields=description"
     user_request = requests.post(request_url, headers=get_header(), json={'description': pr_description})
     print(HEADER + BOLD + "Pullrequest agregado a descripción del ticket" + ENDC)
 
