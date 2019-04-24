@@ -95,7 +95,7 @@ def set_config_file(user_config):
         config[GITHUB_SECTION] = {}
         config[GITHUB_SECTION][USER_KEY] = user_config.github_username
         config[GITHUB_SECTION][PASS_KEY] = user_config.github_password
-    if user_config.youtrack_url:
+    if user_config.youtrack_url and user_config.github_token:
         config[GLOBAL_SECTION] = {}
         config[GLOBAL_SECTION][YT_URL] = user_config.youtrack_url
         config[GLOBAL_SECTION][GH_TOKEN] = user_config.github_token
