@@ -178,7 +178,9 @@ def update_binary():
     download_last_release()
 
     subprocess.run(["mv", "./alfred", "/usr/local/bin"])
-    return "alfred succesfully updated"
+    subprocess.run(["chmod", "+x", "/usr/local/bin/alfred"])
+    print("alfred succesfully updated")
+    return 200
 
 
 def is_folder_github_repo(path=os.getcwd()):
