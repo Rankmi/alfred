@@ -43,7 +43,7 @@ def release(action):
     elif action == "download":
         download_last_release()
     elif action[0] == "v":
-        release_alfred(action)
+        release_alfred(action[1:])
 
 
 @greet.command()
