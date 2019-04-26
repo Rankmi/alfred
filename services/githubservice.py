@@ -37,15 +37,16 @@ def create_branch(base, name):
         folder = os.getcwd().split("/")[-1]
         repo = org.get_repo(folder)
         source = repo.get_branch(base)
+        clean_name = "".join([char for char in name if char.isalnum() or char == "-"])
 
         try:
-            repo.create_git_ref(ref='refs/heads/' + name, sha=source.commit.sha)
-            print('Rama ' + name + ' creada exitosamente. Puedes verla en: '
-                                   'https://github.com/Rankmi/' + folder + '/tree/' + name)
+            repo.create_git_ref(ref='refs/heads/' + clean_name, sha=source.commit.sha)
+            print('Rama', clean_name, 'creada exitosamente. Puedes verla en:',
+                  'https://github.com/Rankmi/' + folder + '/tree/' + clean_name)
 
         except GithubException as e:
             if e.status == 422:
-                print('La rama para esta tarea ya existe')
+                print('La rama para esta tarea ya existe o su nombre es inválido')
             else:
                 print(e)
                 exit()
