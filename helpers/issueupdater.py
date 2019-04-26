@@ -58,7 +58,7 @@ def finish_issue():
     print(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Para CodeReview'" + ENDC)
 
     current_description = issue.context.description if issue.context.description else ""
-    pr_description = current_description + "\n\nPR " + os.getcwd().split("/")[-1].title() + ":\n" + pr_url
+    pr_description = current_description + "\n\nPR " + os.getcwd().split("/")[-1].title() + ":\n" + pr_url + " *via **alfred***"
     request_url = get_config_key(GLOBAL_SECTION, YT_URL) + "/api/issues/" + issue.id + "?fields=description"
     user_request = requests.post(request_url, headers=get_header(), json={'description': pr_description})
     print(HEADER + BOLD + "Pullrequest agregado a descripción del ticket" + ENDC)
