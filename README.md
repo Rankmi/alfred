@@ -33,6 +33,15 @@ En caso de que necesites modificar las credenciales de algún servicio, puedes h
  # Los servicios pueden ser: aws, github, youtrack, all 
  $ alfred reset <service>
 ```
+#### Credenciales Github:
+Para obtener el token de github se debe ir a Settings -> Developer settings -> Personal access tokens y generar un token nuevo.
+
+#### Credenciales AWS:
+Conversar con el devops
+
+#### Credenciales Youtrack
+Solicitar con el devops
+
 
 ### Flujo de desarrollo
 
