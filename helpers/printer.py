@@ -44,7 +44,17 @@ def print_issue_list(issues):
             color = CRITICAL + BOLD
         else:
             color = ""
-        print(color + "[" + str(index) + "] \t", issue.priority, "\t", issue.summary + ENDC)
+
+        if issue.state in ["Por hacer", "En progreso", "En review", "Rechazado"]:
+            state_sep = "\t\t "
+        elif issue.state == "CR Cambios solicitados":
+            state_sep = " "
+        else:
+            state_sep = "\t "
+
+        prior_sep = "\t" * (2 if issue.priority == "Minor" else 1)
+
+        print(color + "[" + str(index) + "]\t", issue.priority, prior_sep, issue.state, state_sep, issue.summary + ENDC)
         index += 1
 
     if len(issue_ids):
