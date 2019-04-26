@@ -7,8 +7,6 @@ from helpers.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_
     reset_youtrack_credentials, GLOBAL_SECTION, YT_URL
 from services.issueclasses import Issue
 
-__base_url = get_config_key(GLOBAL_SECTION, YT_URL)
-
 STATES = {
     "pending": "#{Por hacer}",
     "progress": "#{En progreso}",
@@ -31,7 +29,7 @@ def get_issues_by_state(state):
                         "fields(projectCustomField(field(name)),value(name))",
               "query": get_youtrack_user() + " " + STATES[state]}
 
-    request_url = __base_url + "/api/issues"
+    request_url = get_youtrack_url() + "/api/issues"
     user_request = requests.get(request_url, headers=get_header(), params=params)
     user_list = json.loads(user_request.text)
     if user_request.ok:
@@ -46,9 +44,9 @@ def get_issue_by_id(id):
     params = {"fields": "description,created,numberInProject,project(shortName),summary,reporter(name),"
                         "fields(projectCustomField(field(name)),value(name))"}
     if id.isdigit():
-        request_url = __base_url + "/api/issues/RKM-" + id
+        request_url = get_youtrack_url() + "/api/issues/RKM-" + id
     else:
-        request_url = __base_url + "/api/issues/" + id
+        request_url = get_youtrack_url() + "/api/issues/" + id
     user_request = requests.get(request_url, headers=get_header(), params=params)
     if user_request.ok:
         fields = json.loads(user_request.text)
@@ -59,7 +57,7 @@ def get_issue_by_id(id):
 
 
 def execute_command(issue, field, value):
-    request_url = __base_url + "/rest/issue/" + issue.id + "/execute?command=" + field + "+" + value
+    request_url = get_youtrack_url() + "/rest/issue/" + issue.id + "/execute?command=" + field + "+" + value
     user_request = requests.post(request_url, headers=get_header())
 
     if user_request.ok:
@@ -71,7 +69,7 @@ def execute_command(issue, field, value):
 
 def get_youtrack_user():
     y_user = get_config_key(YOUTRACK_SECTION, USER_KEY)
-    if y_user is not None:
+    if y_user:
         return y_user
     else:
         print("No has ingresado tus credenciales de youtrack")
@@ -87,3 +85,8 @@ def get_header():
         print("No has ingresado tus credenciales de youtrack")
         reset_youtrack_credentials()
         return get_config_key(YOUTRACK_SECTION, YOUTRACK_KEY)
+
+
+def get_youtrack_url():
+    yt_baseurl = get_config_key(GLOBAL_SECTION, YT_URL)
+    return yt_baseurl if yt_baseurl else "https://youtrack.rankmi.com"
