@@ -132,16 +132,9 @@ def upload_asset(upload_url):
 
 
 def download_last_release():
-    token = 'token ' + get_token()
+    assets = get_last_release()['assets']
 
-    last_release = str(get_last_release()['id'])
-
-    asset = requests.get('https://api.github.com/repos/Rankmi/alfred/releases/' + last_release,
-                         headers={
-                             'Authorization': token
-                         })
-
-    for asset in asset.json()['assets']:
+    for asset in assets:
         if asset['name'] == 'alfred-for-mac' and platform.system() == "Darwin":
             asset_url = asset['url']
         elif asset['name'] == 'alfred-for-linux' and platform.system() == "Linux":
@@ -149,7 +142,6 @@ def download_last_release():
 
     file = requests.get(asset_url,
                         headers={
-                            'Authorization': token,
                             'Accept': 'application/octet-stream'
                         },
                         stream=True)
@@ -157,31 +149,31 @@ def download_last_release():
     with open("alfred", 'wb') as f:
         shutil.copyfileobj(file.raw, f)
 
-    return "alfred"
+    return True
 
 
 def get_last_release():
-    token = 'token ' + get_token()
-
-    response = requests.get("https://api.github.com/repos/Rankmi/alfred/releases",
-                            headers={
-                                'Authorization': token
-                            })
-
-    return response.json()[0]
+    response = requests.get("https://api.github.com/repos/Rankmi/alfred/releases/latest")
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(response.status_code)
+        exit()
 
 
 def update_binary():
     if __version__ == get_last_release()['tag_name']:
-        return "Your alfred version is up-to-date"
+        print("Your current alfred version is up-to-date")
 
     print("Downloading last binary realeased for " + platform.system())
-    download_last_release()
+    download = download_last_release()
 
-    subprocess.run(["mv", "./alfred", "/usr/local/bin"])
-    subprocess.run(["chmod", "+x", "/usr/local/bin/alfred"])
-    print("alfred succesfully updated")
-    return 200
+    if download:
+        subprocess.run(["mv", "./alfred", "/usr/local/bin"])
+        subprocess.run(["chmod", "+x", "/usr/local/bin/alfred"])
+        print("alfred succesfully updated")
+    else:
+        print("There was a problem downloading the file.")
 
 
 def is_folder_github_repo(path=os.getcwd()):
