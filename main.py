@@ -11,13 +11,17 @@ from services.awsservice import get_backup, dumpbackup
 from services.youtrackservice import get_issues_by_state, get_issue_by_id
 from services.githubservice import create_release, upload_asset, download_last_release, update_binary
 from services.releaser import release_alfred
+from helpers.colors import BOLD, HEADER, ENDC
+from halo import Halo
 
 
 @click.group(invoke_without_command=True)
 @click.option('--version', '-v', is_flag=True)
 def greet(version):
+    spinner = Halo()
     if version:
-        click.echo("alfred v" + __version__)
+        version = BOLD + HEADER + "alfred" + ENDC + BOLD + " v" + __version__
+        spinner.stop_and_persist(text=version, symbol='🦄'.encode('utf-8'))
 
 
 @greet.command()
