@@ -21,7 +21,7 @@ def print_issue(issue):
 
     print(GREEN + BOLD + "Asignados:" + ENDC)
     for field in issue.assignees.listedAssignees:
-        print("- "+ BOLD + field + ENDC +":", issue.assignees.listedAssignees[field])
+        print("- " + BOLD + field + ENDC + ":", issue.assignees.listedAssignees[field])
     print("--------------------------------------------------------------------------")
 
     if issue.state == STATES["todo"]:
