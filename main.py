@@ -9,7 +9,8 @@ from helpers.issueupdater import update_issue
 from helpers.printer import print_issue, print_issue_list
 from services.awsservice import get_backup, dumpbackup
 from services.youtrackservice import get_issues_by_state, get_issue_by_id
-from services.githubservice import create_release, upload_asset, download_last_release, update_binary
+from services.githubservice import create_release, upload_asset, download_last_release, update_binary, \
+    is_folder_github_repo
 from services.releaser import release_alfred
 from helpers.colors import BOLD, HEADER, ENDC
 from halo import Halo
@@ -64,7 +65,12 @@ def tasks(state):
 @greet.command()
 @click.argument("action")
 def task(action):
-    update_issue(action)
+    if is_folder_github_repo():
+        update_issue(action)
+    else:
+        spinner = Halo()
+        spinner.fail('Debes localizarte en un repositorio válido')
+        exit()
 
 
 @greet.command()
