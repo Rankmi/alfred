@@ -2,6 +2,7 @@ import os
 import subprocess
 
 import requests
+from halo import Halo
 
 from helpers.colors import HEADER, BOLD, CRITICAL, GREEN, ENDC
 from services.githubservice import create_pr, create_branch, delete_branch
@@ -40,10 +41,12 @@ def update_issue(action, issue=None):
 
 
 def start_issue(issue):
+    spinner = Halo()
+
     initialize_issue = input(CRITICAL + BOLD + "Deseas comenzar esta tarea [y/n]: " + ENDC)
     if initialize_issue == "y":
         execute_command(issue, "State", STATES["prog"])
-        print(BOLD + "Estado de la tarea fue cambiado a 'En progreso'" + ENDC)
+        spinner.succeed(BOLD + "Estado de la tarea fue cambiado a 'En progreso'" + ENDC)
         generate_branch = input(CRITICAL + BOLD + "Deseas crear una rama para esta tarea [y/n]: " + ENDC)
         if generate_branch == "y":
             create_branch('master' if issue.priority in ["ShowStopper", "Blocker"] else 'development', issue.branch)
@@ -51,42 +54,52 @@ def start_issue(issue):
 
 def finish_issue():
     issue = recognize_current_issue()
-    print(HEADER + BOLD + "Finalizando etapa de desarrollo de", issue.id + ENDC)
+
+    spinner = Halo(text=HEADER + BOLD + "Finalizando etapa de desarrollo de " + issue.id + ENDC, spinner="dots")
+    spinner.stop_and_persist(symbol='🦄'.encode('utf-8'))
 
     pr_url = create_pr('master' if issue.priority in ["ShowStopper", "Blocker"] else 'development')
     execute_command(issue, "State", STATES["cr"])
-    print(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Para CodeReview'" + ENDC)
+    spinner.succeed(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Para CodeReview'" + ENDC)
 
+    spinner.start("Agregando Pull-Request al ticket")
     current_description = issue.context.description if issue.context.description else ""
     pr_description = current_description + "\n\nPR " + os.getcwd().split("/")[-1].title() + ":\n" + pr_url + " *via **alfred***"
     request_url = get_config_key(GLOBAL_SECTION, YT_URL) + "/api/issues/" + issue.id + "?fields=description"
     user_request = requests.post(request_url, headers=get_header(), json={'description': pr_description})
-    print(HEADER + BOLD + "Pullrequest agregado a descripción del ticket" + ENDC)
+    spinner.succeed(HEADER + BOLD + "Pull-Request agregado a descripción del ticket" + ENDC)
 
-    print(BOLD + "Volviendo a " + GREEN + "'development'" + ENDC)
+    spinner.start(BOLD + "Volviendo a " + GREEN + "'development'" + ENDC)
     subprocess.run(["git", "checkout", "development"])
     subprocess.run(["git", "pull", "origin", "development"])
+    spinner.succeed()
     return user_request
 
 
 def accept_issue():
     issue = recognize_current_issue()
-    print(HEADER + BOLD + "Finalizando etapa de QA de", issue.id + ENDC)
+
+    spinner = Halo(text=HEADER + BOLD + "Finalizando etapa de QA de " + issue.id + ENDC, spinner="dots")
+    spinner.stop_and_persist(symbol='🦄'.encode('utf-8'))
 
     if issue.priority in ["ShowStopper", "Blocker"]:
         execute_command(issue, "State", STATES["production"])
-        print(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Producción'" + ENDC)
+        spinner.succeed(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Producción'" + ENDC)
     else:
         execute_command(issue, "State", STATES["accepted"])
-        print(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Aceptado'" + ENDC)
+        spinner.succeed(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Aceptado'" + ENDC)
     delete_branch(issue.branch)
     print(HEADER + BOLD + "La rama de " + os.getcwd().split("/")[-1].title() + " fue eliminada" + ENDC)
 
 
 def move_issue(action):
     issue = recognize_current_issue()
+    spinner = Halo()
+
     execute_command(issue, "State", STATES[action])
-    print(BOLD + "Estado de la tarea fue cambiado a '" + GREEN + STATES[action] + "'" + ENDC)
+    spinner.stop_and_persist(text=BOLD + "Estado de la tarea fue cambiado a '" + GREEN + STATES[action] + "'" + ENDC,
+                             symbol='🦄'.encode('utf-8'))
+
     if action != 'review':
         subprocess.run(["git", "checkout", "development"])
         subprocess.run(["git", "pull", "origin", "development"])
