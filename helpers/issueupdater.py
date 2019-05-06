@@ -5,7 +5,7 @@ import requests
 from halo import Halo
 
 from helpers.colors import HEADER, BOLD, CRITICAL, GREEN, ENDC
-from services.githubservice import create_pr, create_branch, delete_branch
+from services.githubservice import create_pr, start_development
 from services.youtrackservice import get_issue_by_id, execute_command, get_header
 from helpers.configfilehelper import GLOBAL_SECTION, YT_URL, get_config_key
 
@@ -49,7 +49,7 @@ def start_issue(issue):
         spinner.succeed(BOLD + "Estado de la tarea fue cambiado a 'En progreso'" + ENDC)
         generate_branch = input(CRITICAL + BOLD + "Deseas crear una rama para esta tarea [y/n]: " + ENDC)
         if generate_branch == "y":
-            create_branch('master' if issue.priority in ["ShowStopper", "Blocker"] else 'development', issue.branch)
+            start_development(issue.priority, issue.branch)
 
 
 def finish_issue():
@@ -58,13 +58,14 @@ def finish_issue():
     spinner = Halo(text=HEADER + BOLD + "Finalizando etapa de desarrollo de " + issue.id + ENDC, spinner="dots")
     spinner.stop_and_persist(symbol='🦄'.encode('utf-8'))
 
-    pr_url = create_pr('master' if issue.priority in ["ShowStopper", "Blocker"] else 'development')
+    pr_url = create_pr('development')
     execute_command(issue, "State", STATES["cr"])
     spinner.succeed(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Para CodeReview'" + ENDC)
 
     spinner.start("Agregando Pull-Request al ticket")
     current_description = issue.context.description if issue.context.description else ""
-    pr_description = current_description + "\n\nPR " + os.getcwd().split("/")[-1].title() + ":\n" + pr_url + " *via **alfred***"
+    pr_description = current_description + "\n\nPR " + \
+                     os.getcwd().split("/")[-1].title() + ":\n" + pr_url + " *via **alfred***"
     request_url = get_config_key(GLOBAL_SECTION, YT_URL) + "/api/issues/" + issue.id + "?fields=description"
     user_request = requests.post(request_url, headers=get_header(), json={'description': pr_description})
     spinner.succeed(HEADER + BOLD + "Pull-Request agregado a descripción del ticket" + ENDC)
@@ -78,18 +79,19 @@ def finish_issue():
 
 def accept_issue():
     issue = recognize_current_issue()
+    current_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])[:-1].decode("utf-8")
 
     spinner = Halo(text=HEADER + BOLD + "Finalizando etapa de QA de " + issue.id + ENDC, spinner="dots")
     spinner.stop_and_persist(symbol='🦄'.encode('utf-8'))
 
-    if issue.priority in ["ShowStopper", "Blocker"]:
+    if issue.priority in ["ShowStopper", "Blocker", "Critical"]:
+        subprocess.run(['git', 'hf', 'hotfix', 'finish', current_branch.split('/')[1]])
         execute_command(issue, "State", STATES["production"])
         spinner.succeed(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Producción'" + ENDC)
     else:
+        subprocess.run(['git', 'hf', 'feature', 'finish', current_branch.split('/')[1]])
         execute_command(issue, "State", STATES["accepted"])
         spinner.succeed(BOLD + "Estado de la tarea fue cambiado a " + GREEN + "'Aceptado'" + ENDC)
-    delete_branch(issue.branch)
-    print(HEADER + BOLD + "La rama de " + os.getcwd().split("/")[-1].title() + " fue eliminada" + ENDC)
 
 
 def move_issue(action):
@@ -107,5 +109,5 @@ def move_issue(action):
 
 def recognize_current_issue():
     current_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])[:-1].decode("utf-8")
-    issue_id = current_branch.split("-")[0] + "-" + current_branch.split("-")[1]
+    issue_id = "-".join(current_branch.split("-")[:2]).split("/")[1]
     return get_issue_by_id(issue_id)
