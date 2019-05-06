@@ -10,6 +10,7 @@ from halo import Halo
 
 from helpers.configfilehelper import get_config_key, reset_github_credentials,\
                                      GITHUB_SECTION, USER_KEY, PASS_KEY, GLOBAL_SECTION, GH_TOKEN
+from helpers.colors import BOLD, CRITICAL,ENDC
 from _version import __version__
 
 ORGANIZATION = "Rankmi"
@@ -31,42 +32,13 @@ def get_github_instance():
             exit()
 
 
-def create_branch(base, name):
-    org = get_github_instance()
-
-    if is_folder_github_repo():
-        folder = os.getcwd().split("/")[-1]
-        repo = org.get_repo(folder)
-        source = repo.get_branch(base)
-        clean_name = "".join([char for char in name if char.isalnum() or char == "-"])
-
-        try:
-            repo.create_git_ref(ref='refs/heads/' + clean_name, sha=source.commit.sha)
-            print('Rama', clean_name, 'creada exitosamente. Puedes verla en:',
-                  'https://github.com/Rankmi/' + folder + '/tree/' + clean_name)
-
-        except GithubException as e:
-            if e.status == 422:
-                print('La rama para esta tarea ya existe o su nombre es inválido')
-            else:
-                print(e)
-                exit()
-
-        subprocess.run(["git", "fetch", "--all"])
-        subprocess.run(["git", "checkout", name])
-
+def start_development(priority, name):
+    if priority in ['ShowStopper', 'Blocker', 'Critical']:
+        version = input(CRITICAL + BOLD + "Determina la versión del Hotfix: " + ENDC)
+        subprocess.run(['git', 'hf', 'hotfix', 'start', version])
     else:
-        print("Debes localizarte en un repositorio válido.")
-
-
-def delete_branch(branch):
-    org = get_github_instance()
-    folder = os.getcwd().split("/")[-1]
-    repo = org.get_repo(folder)
-    repo.get_git_ref(ref='heads/' + branch).delete()
-    subprocess.run(["git", "checkout", "development"])
-    subprocess.run(["git", "branch", "-D", branch])
-    subprocess.run(["git", "pull"])
+        clean_name = "".join([char for char in name if char.isalnum() or char == "-"])
+        subprocess.run(['git', 'hf', 'feature', 'start', clean_name])
 
 
 def create_pr(compare):
