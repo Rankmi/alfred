@@ -3,9 +3,9 @@ import configparser
 import getpass
 from configparser import ConfigParser
 from os.path import expanduser
-from halo import Halo
 
 from config_models.alfredconfig import AlfredConfig
+from helpers.colors import print_msg, IconsEnum
 
 __config_filename = '.alfred.conf'
 config_location = str(expanduser("~") + "/" + __config_filename)
@@ -32,9 +32,9 @@ def reset_credentials(interface):
         "all": reset_all_credentials
     }
 
-    spinner = Halo()
     if interface not in list(interfaces.keys()):
-        spinner.fail("Debes ingresar un input válido. Revisa la documentación en https://github.com/Rankmi/alfred.")
+        print_msg(IconsEnum.ERROR,
+                  "Debes ingresar un input válido. Revisa la documentación en https://github.com/Rankmi/alfred.")
         return False
 
     reset = interfaces[interface]
