@@ -4,11 +4,11 @@ from sys import exit
 import boto3
 import botocore
 from tqdm import tqdm
-from halo import Halo
 
 from helpers.configfilehelper import get_config_key, AWS_SECTION, USER_KEY, reset_aws_credentials, PASS_KEY, \
     AWS_BUCKET_KEY
 from helpers.filehelper import uncompress
+from helpers.colors import print_msg, IconsEnum
 
 
 def hook(t):
@@ -39,7 +39,6 @@ def download_file(destination_file, aws_file):
     aws_access_key = get_aws_access_key()
     aws_secret = get_aws_access_secret()
     aws_bucket = get_aws_bucket()
-    spinner = Halo()
 
     resource = boto3.resource('s3', region_name='us-west-2',
                               aws_access_key_id=aws_access_key,
@@ -47,23 +46,22 @@ def download_file(destination_file, aws_file):
 
     fileobject = resource.Object(aws_bucket, aws_file)
     try:
-        spinner.start('Comenzando la descarga')
+        print_msg(IconsEnum.INFO, 'Comenzando la descarga')
         filesize = fileobject.content_length
-        spinner.stop_and_persist(symbol='🦄'.encode('utf-8'))
         with tqdm(total=filesize, unit='B', unit_scale=True,
                   desc=destination_file) as t:
             resource.Bucket(aws_bucket).download_file(aws_file, destination_file, Callback=hook(t))
-        spinner.succeed('Descarga finalizada')
+        print_msg(IconsEnum.SUCCESS, 'Descarga finalizada')
         return True
     except botocore.exceptions.ParamValidationError as e:
-        spinner.fail("El bucket no tiene el nombre correcto. Resetea tus credenciales" +
-                     "(alfred reset aws)")
+        print_msg(IconsEnum.ERROR, "El bucket no tiene el nombre correcto. Resetea tus credenciales" +
+                  "(alfred reset aws)")
         exit()
     except botocore.exceptions.ClientError as e:
-        spinner.fail("Error " + e.response['Error']['Code'])
+        print_msg(IconsEnum.ERROR, "Error " + e.response['Error']['Code'])
         exit()
     except ValueError:
-        spinner.fail("No se pudo descargar el archivo por problemas de conectividad")
+        print_msg(IconsEnum.ERROR, "No se pudo descargar el archivo por problemas de conectividad")
         exit()
 
 
