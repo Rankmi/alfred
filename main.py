@@ -5,24 +5,21 @@
 import click
 from _version import __version__
 from helpers.configfilehelper import reset_credentials
-from helpers.issueupdater import update_issue
+from helpers.issueupdater import update_issue, finish_issue, STATES
 from helpers.printer import print_issue, print_issue_list
 from services.awsservice import get_backup, dumpbackup
-from services.youtrackservice import get_issues_by_state, get_issue_by_id
+from services.youtrackservice import get_issues_by_state, get_issue_by_id, execute_command
 from services.githubservice import create_release, upload_asset, download_last_release, update_binary, \
-    is_folder_github_repo
+    is_folder_github_repo, hubflow_interaction
 from services.releaser import release_alfred
-from helpers.colors import BOLD, HEADER, ENDC
-from halo import Halo
+from helpers.colors import BOLD, HEADER, ENDC, print_msg, GREEN, CRITICAL, IconsEnum
 
 
 @click.group(invoke_without_command=True)
 @click.option('--version', '-v', is_flag=True)
 def greet(version):
-    spinner = Halo()
     if version:
-        version = BOLD + HEADER + "alfred" + ENDC + BOLD + " v" + __version__
-        spinner.stop_and_persist(text=version, symbol='🦄'.encode('utf-8'))
+        print_msg(IconsEnum.UNICORN, HEADER + "alfred" + ENDC + BOLD + " v" + __version__)
 
 
 @greet.command()
@@ -68,9 +65,58 @@ def task(action):
     if is_folder_github_repo():
         update_issue(action)
     else:
-        spinner = Halo()
-        spinner.fail('Debes localizarte en un repositorio válido')
+        print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
         exit()
+
+
+@greet.command()
+@click.argument('type')
+@click.argument('name')
+def start(type, name):
+    if not is_folder_github_repo():
+        print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
+        exit()
+
+    if type == 'hotfix':
+        hubflow_interaction('start', type, name, hf=True)
+        name = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
+    else:
+        hubflow_interaction('start', type, name)
+
+    execute_command(name, "State", STATES["prog"])
+    print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a 'En progreso'")
+
+
+@greet.command()
+@click.argument('type')
+@click.argument('name')
+def finish(type, name):
+    if not is_folder_github_repo():
+        print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
+        exit()
+
+    if type == 'hotfix':
+        issueid = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
+        finish_issue(issueid, name)
+    else:
+        finish_issue(name)
+
+
+@greet.command()
+@click.argument('type')
+@click.argument('name')
+def close(type, name):
+    if not is_folder_github_repo():
+        print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
+        exit()
+
+    hubflow_interaction('finish', type, name)
+
+    if type == 'hotfix':
+        name = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
+
+    execute_command(name, "State", STATES["production" if type == 'hotfix' else "accepted"])
+    print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Producción'")
 
 
 @greet.command()

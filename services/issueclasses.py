@@ -1,4 +1,10 @@
 import datetime
+from enum import Enum
+
+
+class YoutrackPriorities(Enum):
+    HOTFIXES = ['ShowStopper', 'Blocker', 'Critical']
+    FEATURES = ['Normal', 'Minor']
 
 
 class Issue:
@@ -15,6 +21,8 @@ class Issue:
             setattr(self,
                     field['projectCustomField']['field']['name'].lower(),
                     field['value']['name'])
+
+        self.type = 'hotfix' if self.priority in YoutrackPriorities.HOTFIXES.value else 'feature'
 
     def __str__(self):
         return str({"id": self.id, "summary": self.summary, "state": self.state, "priority": self.priority})
