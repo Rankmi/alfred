@@ -83,7 +83,6 @@ def get_created_branches():
 
 def create_pr(compare, issue, tag=None):
     org = get_github_instance()
-    issue = get_issue_by_id(issue)
 
     print_msg(IconsEnum.INFO, 'Creando Pull-Request')
     current_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])[:-1].decode("utf-8")
