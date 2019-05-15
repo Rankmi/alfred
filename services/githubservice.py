@@ -31,9 +31,9 @@ def get_github_instance():
             exit()
 
 
-def hubflow_interaction(type, action, name, hf=False):
+def hubflow_interaction(action, type, name, hf=False):
     if not is_folder_hf_initialized():
-        print_msg('info', "Configurando Hubflow correctamente")
+        print_msg(IconsEnum.INFO, "Configurando Hubflow correctamente")
         config_hf_repo()
 
     if hf:
@@ -43,9 +43,15 @@ def hubflow_interaction(type, action, name, hf=False):
             return
 
     if action == "start":
-        subprocess.run(['git', 'hf', type, 'start', name])
+        hf_output = subprocess.run(['git', 'hf', type, 'start', name])
+        if hf_output.returncode:
+            print_msg(IconsEnum.ERROR, 'Hubo un error creando la rama')
+            exit()
     elif action == "close":
-        subprocess.run((['git', 'hf', type, 'finish', name]))
+        hf_output = subprocess.run(['git', 'hf', type, 'finish', name])
+        if hf_output.returncode:
+            print_msg(IconsEnum.ERROR, 'Hubo un error finalizando la tarea')
+            exit()
 
 
 def is_folder_hf_initialized():
@@ -73,7 +79,7 @@ def config_hf_repo():
             'prefix.versiontag': ''
     }
     
-    for key, value in hubflow_config:
+    for key, value in hubflow_config.items():
         subprocess.run(['git', 'config', 'hubflow.' + key, value])
 
 
@@ -81,13 +87,12 @@ def get_created_branches():
     return subprocess.run(['git', 'branch', '-a'], stdout=subprocess.PIPE).stdout.decode('utf-8').split()
 
 
-def create_pr(compare, issue, tag=None):
+def create_pr(compare, issue):
     org = get_github_instance()
 
     print_msg(IconsEnum.INFO, 'Creando Pull-Request')
     current_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])[:-1].decode("utf-8")
     pr_title = "[" + issue.type + "] " + issue.id
-    if tag: pr_title += ' (%s)' % tag
     folder = os.getcwd().split("/")[-1]
 
     if is_folder_github_repo(folder):
