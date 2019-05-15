@@ -53,11 +53,11 @@ def start_issue(issue):
             hubflow_interaction(priority, 'start', issue.id)
 
 
-def finish_issue(issueid, tag=None):
-    issue = get_issue_by_id(issueid)
+def finish_issue(name):
+    issue = get_issue_by_id(name)
 
     print_msg(IconsEnum.UNICORN, "Finalizando etapa de desarrollo de " + HEADER + issue.id)
-    pr_url = create_pr('development', issue, tag)
+    pr_url = create_pr('development', issue)
     execute_command(issue, "State", STATES["cr"])
     print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Para CodeReview'")
 
@@ -71,8 +71,8 @@ def finish_issue(issueid, tag=None):
 
     print_msg(IconsEnum.INFO, "Volviendo a " + GREEN + "'development'")
     subprocess.run(["git", "checkout", "development"])
-    subprocess.run(["git", "pull", "origin", "development"])
-    
+    subprocess.run(["git", "hf", "update"])
+
     return user_request
 
 

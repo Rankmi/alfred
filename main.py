@@ -76,13 +76,14 @@ def start(type, name):
     if not is_folder_github_repo():
         print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
         exit()
+    if type not in ['hotfix', 'feature', 'release']:
+        print_msg(IconsEnum.ERROR, 'Debes ingresar una acción válida')
+        exit()
+    if type == 'hotfix' and not name.isdigit():
+        print_msg(IconsEnum.ERROR, 'Debes ingresar solo el ID de la tarea (sin "RKM-")')
+        exit()
 
-    if type == 'hotfix':
-        hubflow_interaction('start', type, name, hf=True)
-        name = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
-    else:
-        hubflow_interaction('start', type, name)
-
+    hubflow_interaction('start', type, name)
     execute_command(name, "State", STATES["prog"])
     print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a 'En progreso'")
 
@@ -90,16 +91,15 @@ def start(type, name):
 @greet.command()
 @click.argument('type')
 @click.argument('name')
-def finish(type, name):
+def finish(name):
     if not is_folder_github_repo():
         print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
         exit()
+    if type not in ['hotfix', 'feature', 'release']:
+        print_msg(IconsEnum.ERROR, 'Debes ingresar una acción válida')
+        exit()
 
-    if type == 'hotfix':
-        issueid = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
-        finish_issue(issueid, name)
-    else:
-        finish_issue(name)
+    finish_issue(name)
 
 
 @greet.command()
@@ -109,14 +109,16 @@ def close(type, name):
     if not is_folder_github_repo():
         print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
         exit()
+    if type not in ['hotfix', 'feature', 'release']:
+        print_msg(IconsEnum.ERROR, 'Debes ingresar una acción válida')
+        exit()
 
     hubflow_interaction('finish', type, name)
-
-    if type == 'hotfix':
-        name = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
-
     execute_command(name, "State", STATES["production" if type == 'hotfix' else "accepted"])
-    print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Producción'")
+    if type == 'hotfix':
+        print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + HEADER + "'Producción'")
+    elif type == 'feature':
+        print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + HEADER + "'Aceptado'")
 
 
 @greet.command()
