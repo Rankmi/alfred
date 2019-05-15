@@ -79,7 +79,7 @@ def start(type, name):
 
     if type == 'hotfix':
         hubflow_interaction('start', type, name, hf=True)
-        name = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
+        name = 'RKM-' + name.split('.')[2]
     else:
         hubflow_interaction('start', type, name)
 
@@ -96,10 +96,9 @@ def finish(type, name):
         exit()
 
     if type == 'hotfix':
-        issueid = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
-        finish_issue(issueid, name)
-    else:
-        finish_issue(name)
+        name = 'RKM-' + name.split('.')[2]
+
+    finish_issue(name)
 
 
 @greet.command()
@@ -113,7 +112,7 @@ def close(type, name):
     hubflow_interaction('finish', type, name)
 
     if type == 'hotfix':
-        name = input(CRITICAL + BOLD + "Ingresa el código de la tarea: " + ENDC)
+        name = 'RKM-' + name.split('.')[2]
 
     execute_command(name, "State", STATES["production" if type == 'hotfix' else "accepted"])
     print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Producción'")
