@@ -6,6 +6,7 @@ from sys import exit
 from helpers.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
     reset_youtrack_credentials, GLOBAL_SECTION, YT_URL
 from services.issueclasses import Issue
+from helpers.colors import print_msg, IconsEnum
 
 STATES = {
     "pending": "#{Por hacer}",
@@ -21,9 +22,8 @@ STATES = {
 
 
 def get_issues_by_state(state):
-
     if state not in list(STATES.keys()):
-        return 400
+        return False
 
     params = {"fields": "project(shortName),numberInProject,summary,"
                         "fields(projectCustomField(field(name)),value(name))",
@@ -36,7 +36,7 @@ def get_issues_by_state(state):
         issues = [Issue(issue) for issue in user_list if Issue(issue).state not in ["Archivado", "Backlog"]]
         return issues
     else:
-        print("Error:", user_request.status_code, "on get_issues_by_state")
+        print_msg(IconsEnum.ERROR, "Error: " + user_request.status_code + " on get_issues_by_state")
         exit()
 
 
@@ -52,7 +52,7 @@ def get_issue_by_id(id):
         fields = json.loads(user_request.text)
         return Issue(fields, complete=True)
     else:
-        print("Error:", user_request.status_code)
+        print_msg(IconsEnum.ERROR, "Error: " + user_request.status_code)
         exit()
 
 
@@ -63,7 +63,7 @@ def execute_command(issue, field, value):
     if user_request.ok:
         return user_request
     else:
-        print("Error:", user_request.status_code, "on execute_command")
+        print_msg(IconsEnum.ERROR, "Error: " + user_request.status_code + " on execute_command")
         exit()
 
 
@@ -72,7 +72,7 @@ def get_youtrack_user():
     if y_user:
         return y_user
     else:
-        print("No has ingresado tus credenciales de youtrack")
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de Youtrack")
         reset_youtrack_credentials()
         return get_config_key(YOUTRACK_SECTION, USER_KEY)
 
@@ -82,7 +82,7 @@ def get_header():
     if y_key:
         return {"Authorization": "Bearer "+y_key}
     else:
-        print("No has ingresado tus credenciales de youtrack")
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de Youtrack")
         reset_youtrack_credentials()
         return get_config_key(YOUTRACK_SECTION, YOUTRACK_KEY)
 

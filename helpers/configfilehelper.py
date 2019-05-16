@@ -5,6 +5,7 @@ from configparser import ConfigParser
 from os.path import expanduser
 
 from config_models.alfredconfig import AlfredConfig
+from helpers.colors import print_msg, IconsEnum
 
 __config_filename = '.alfred.conf'
 config_location = str(expanduser("~") + "/" + __config_filename)
@@ -32,8 +33,9 @@ def reset_credentials(interface):
     }
 
     if interface not in list(interfaces.keys()):
-        print("Debes ingresar un input válido. Revisa la documentación en https://github.com/Rankmi/alfred.")
-        return 400
+        print_msg(IconsEnum.ERROR,
+                  "Debes ingresar un input válido. Revisa la documentación en https://github.com/Rankmi/alfred.")
+        return False
 
     reset = interfaces[interface]
     reset()
