@@ -3,6 +3,7 @@
 """
 
 import click
+from sys import exit
 from _version import __version__
 from helpers.configfilehelper import reset_credentials
 from helpers.issueupdater import update_issue, finish_issue, STATES
@@ -83,7 +84,7 @@ def start(type, name):
     else:
         hubflow_interaction('start', type, name)
 
-    execute_command(name, "State", STATES["prog"])
+    execute_command(get_issue_by_id(name), "State", STATES["prog"])
     print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a 'En progreso'")
 
 
@@ -96,7 +97,7 @@ def finish(type, name):
         exit()
 
     if type == 'hotfix':
-        name = 'RKM-' + name.split('.')[2]
+        name = name.split('.')[2]
 
     finish_issue(name)
 
@@ -112,9 +113,9 @@ def close(type, name):
     hubflow_interaction('finish', type, name)
 
     if type == 'hotfix':
-        name = 'RKM-' + name.split('.')[2]
+        name = name.split('.')[2]
 
-    execute_command(name, "State", STATES["production" if type == 'hotfix' else "accepted"])
+    execute_command(get_issue_by_id(name), "State", STATES["production" if type == 'hotfix' else "accepted"])
     print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Producción'")
 
 
