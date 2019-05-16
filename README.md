@@ -45,32 +45,30 @@ Solicitar con el devops
 
 ### Flujo de desarrollo
 
-Alfred podrá ayudarte a trabajar con los distintos servicios a través del comando `task`
+Al realizar acciones que involucren el uso de Gitflow, debes utilizar: 
+- `alfred start feature <RKM-XXXX>`: A través de Gitflow, alfred creará la rama de desarrollo y automáticamnte actualizará
+el estado de la tarea en YouTrack a 'En Progreso'. 
 
-``` console
-# Las acciones permitidas son: start, finish, qa, changes, review, accept y reject. 
-$ alfred task <action>
-```
-- `start`: Cambiará la tarea de estado a 'En progreso', además de preguntar si deseas crear de inmediato una rama en
-GitHub para trabajar (esta rama se nombrará automáticamente con el formato 'RKM-XXXX-Titulo-del-ticket'.)
-
-Para las siguientes opciones, tu rama activa deberá comenzar con 'RKM-XXXX':
- 
-- `finish`: Se creará un Pull request en GitHub y se agregará su enlace a la descripción de la tarea en YouTrack. 
+- `alfred finish feature <RKM-XXXX>`: Se creará un Pull request en GitHub y se agregará su enlace a la descripción de la tarea en YouTrack. 
 Cambiará el estado de la tarea a 'Para CodeReview', cambiará tu rama a 'development' y descargará sus últimos cambios.  
 
-- `qa`: Cambiará el estado de la tarea a 'Pendiente de QA', cambiará tu rama a 'development' y descargará sus últimos
+- `alfred close feature <RKM-XXXX>`: Cambiará el estado de la tarea a 'Aceptado' o 'Producción' según corresponda, cambiará tu rama a 
+'development' y descargará sus últimos cambios. Además, eliminará la rama de desarrollo.
+*El Pull-Request asociado a la rama debe estar Mergeado para realizar esta acción*
+
+* Para Hotfixes, debes utilizar el versionamiento con formato X.Y.ISSUE_ID (sin RKM-). Por ejemplo: `alfred start hotfix 3.10.6346`.
+
+Para las siguientes opciones, tu rama activa deberá comenzar con 'RKM-XXXX':
+
+- `alfred task qa`: Cambiará el estado de la tarea a 'Pendiente de QA', cambiará tu rama a 'development' y descargará sus últimos
 cambios.
 
-- `changes`: Cambiará el estado de la tarea a 'CR Cambios Solicitados', cambiará tu rama a 'development' y descargará 
+- `alfred task changes`: Cambiará el estado de la tarea a 'CR Cambios Solicitados', cambiará tu rama a 'development' y descargará 
 sus últimos cambios.
 
-- `review`: Cambiará el estado de la tarea a 'En Review'.
+- `alfred task review`: Cambiará el estado de la tarea a 'En Review'.
 
-- `accept`: Cambiará el estado de la tarea a 'Aceptado' o 'Producción' según corresponda, cambiará tu rama a 
-'development' y descargará sus últimos cambios. Además, eliminará la rama de desarrollo.
-
-- `reject`: Cambiará el estado de la tarea a 'Rechazado', cambiará tu rama a 'development' y descargará 
+- `alfred task reject`: Cambiará el estado de la tarea a 'Rechazado', cambiará tu rama a 'development' y descargará 
 sus últimos cambios.
 
 ### YouTrack
