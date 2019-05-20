@@ -40,6 +40,7 @@ def hubflow_interaction(action, type, name, hf=False):
         subprocess.run(['git', 'hf', 'update'])
         if 'hotfix/' in '-'.join(get_created_branches()):
             subprocess.run(['git', 'checkout', '-b', 'hotfix/' + name])
+            subprocess.run(['git', 'push', '--set-upstream', 'origin', 'hotfix/' + name])
             return
 
     if action == "start":
