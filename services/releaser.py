@@ -7,14 +7,15 @@ def release_alfred(version):
         print("You need to release alfred from a Mac machine.")
         return 403
 
-    subprocess.run(["echo", "__version__ = " + version, ">", "_version.py"])
+    with open("_version.py", "w") as f:
+        f.write("__version__ = '" + version + "'")
 
     print("Releasing binary for Mac systems.")
     subprocess.run(["./generator.sh", "ins", "gen"])
     subprocess.run(["alfred", "release", "new"])
 
     print("Releasing binary for Linux systems.")
-    subprocess.run(["cp", "~/.alfred.conf", "."])
+    subprocess.call("cp ~/.alfred.conf .", shell=True)
     subprocess.run(["docker", "build", "-t", "alfredock:"+version, "."])
     subprocess.run(["rm", ".alfred.conf"])
 
