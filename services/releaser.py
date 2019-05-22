@@ -12,7 +12,7 @@ def release_alfred(version):
 
     print("Releasing binary for Mac systems.")
     subprocess.run(["./generator.sh", "ins", "gen"])
-    subprocess.run(["alfred", "release", "new"])
+    subprocess.run(["./dist/alfred", "release", "new"])
 
     print("Releasing binary for Linux systems.")
     subprocess.call("cp ~/.alfred.conf .", shell=True)
