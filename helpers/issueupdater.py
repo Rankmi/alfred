@@ -51,7 +51,7 @@ def start_issue(issue):
         generate_branch = input(CRITICAL + BOLD + "Deseas crear una rama para esta tarea [y/n]: " + ENDC)
         if generate_branch == "y":
             priority = 'hotfix' if issue.priority in YoutrackPriorities.HOTFIXES.value else 'feature'
-            hubflow_interaction(priority, 'start', issue.id)
+            hubflow_interaction('start', priority, issue.id)
 
 
 def finish_issue(issueid):

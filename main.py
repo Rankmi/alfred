@@ -132,4 +132,4 @@ def dump(environment):
 
 
 if __name__ == '__main__':
-    greet(prog_name='alfred.sh')
+    greet(prog_name='alfred')
