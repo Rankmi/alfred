@@ -46,17 +46,22 @@ Solicitar con el devops
 ### Flujo de desarrollo
 
 Al realizar acciones que involucren el uso de Gitflow, debes utilizar: 
-- `alfred start feature <RKM-XXXX>`: A través de Gitflow, alfred creará la rama de desarrollo y automáticamnte actualizará
-el estado de la tarea en YouTrack a 'En Progreso'. 
 
-- `alfred finish feature <RKM-XXXX>`: Se creará un Pull request en GitHub y se agregará su enlace a la descripción de la tarea en YouTrack. 
-Cambiará el estado de la tarea a 'Para CodeReview', cambiará tu rama a 'development' y descargará sus últimos cambios.  
+#### Para la interacción con Hubflow
 
-- `alfred close feature <RKM-XXXX>`: Cambiará el estado de la tarea a 'Aceptado' o 'Producción' según corresponda, cambiará tu rama a 
-'development' y descargará sus últimos cambios. Además, eliminará la rama de desarrollo.
-*El Pull-Request asociado a la rama debe estar Mergeado para realizar esta acción*
-
-* Para Hotfixes, debes utilizar el versionamiento con formato X.Y.ISSUE_ID (sin RKM-). Por ejemplo: `alfred start hotfix 3.10.6346`.
+| Comando | Descripción
+| --- | ---
+| `$ alfred start ...` | Crea una rama correspondiente al tipo de desarrollo utilizando Hubflow, y cambia la tarea en YouTrack a **En Progreso**.
+| `$ alfred finish ...` | Para `features` y `hotfixes`, crea un Pull-Request en Github para la rama, actualiza la descripción del ticket de Youtrack con un link a este Pull-Request y mueve la tarea a **Para Code-Review**.
+| `$ alfred close ...` | Una vez aceptado el Pull-Request en Github, finaliza el desarrollo utilizando Hubflow y mueve la tarea a **Producción** o **Aceptado**, según corresponda.
+| | Para `hotfixes`, se mezcla la rama a `master` y `development`. 
+| Tipos de desarrollo y formatos de nombramiento | `... feature <RKM-XXXX>`: Para tareas de tipo **Critical**, **Normal** y **Minor**, tomando el ID de la tarea en YouTrack. 
+| | `... hotfix <X.Y.ISSUE_ID>`: Para tareas de tipo **ShowStopper** y **Blocker**. Se utiliza una forma de Semantic versioning que toma el número de tarea asignado en YouTrack (de la misma forma que para un feature, pero sin RKM).  
+| | `... release <X.Y.ISSUE_ID>`: Crea ramas para App y API, utilizando el mismo formato de nombre que un hotfix (reservado para Team Leaders y CTO). 
+ 
+*La funcionalidad para `releases` se encuentra en desarrollo*
+ 
+#### Para otras acciones
 
 Para las siguientes opciones, tu rama activa deberá comenzar con 'RKM-XXXX':
 
