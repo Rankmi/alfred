@@ -114,9 +114,11 @@ def close(type, name):
 
     if type == 'hotfix':
         name = name.split('.')[2]
-
-    execute_command(get_issue_by_id(name), "State", STATES["production" if type == 'hotfix' else "accepted"])
-    print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Producción'")
+        execute_command(get_issue_by_id(name), "State", STATES["production"])
+        print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Producción'")
+    else:
+        execute_command(get_issue_by_id(name), "State", STATES["accepted"])
+        print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Aceptado'")
 
 
 @greet.command()
