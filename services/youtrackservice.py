@@ -36,7 +36,7 @@ def get_issues_by_state(state):
         issues = [Issue(issue) for issue in user_list if Issue(issue).state not in ["Archivado", "Backlog"]]
         return issues
     else:
-        print_msg(IconsEnum.ERROR, "Error: " + user_request.status_code + " on get_issues_by_state")
+        print_msg(IconsEnum.ERROR, "Error: " + str(user_request.status_code) + " on get_issues_by_state")
         exit()
 
 
@@ -52,7 +52,7 @@ def get_issue_by_id(id):
         fields = json.loads(user_request.text)
         return Issue(fields, complete=True)
     else:
-        print_msg(IconsEnum.ERROR, "Error: " + user_request.status_code)
+        print_msg(IconsEnum.ERROR, "Error: " + str(user_request.status_code))
         exit()
 
 
@@ -63,7 +63,7 @@ def execute_command(issue, field, value):
     if user_request.ok:
         return user_request
     else:
-        print_msg(IconsEnum.ERROR, "Error: " + user_request.status_code + " on execute_command")
+        print_msg(IconsEnum.ERROR, "Error: " + str(user_request.status_code) + " on execute_command")
         exit()
 
 
