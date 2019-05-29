@@ -52,8 +52,8 @@ Al realizar acciones que involucren el uso de Gitflow, debes utilizar:
 | Comando | Descripción
 | --- | ---
 | `$ alfred start ...` | Crea una rama correspondiente al tipo de desarrollo utilizando Hubflow, y cambia la tarea en YouTrack a **En Progreso**.
-| `$ alfred finish ...` | Para `features` y `hotfixes`, crea un Pull-Request en Github para la rama, actualiza la descripción del ticket de Youtrack con un link a este Pull-Request y mueve la tarea a **Para Code-Review**.
-| `$ alfred close ...` | Una vez aceptado el Pull-Request en Github, finaliza el desarrollo utilizando Hubflow y mueve la tarea a **Producción** o **Aceptado**, según corresponda.
+| `$ alfred submit ...` | Para `features` y `hotfixes`, crea un Pull-Request en Github para la rama, actualiza la descripción del ticket de Youtrack con un link a este Pull-Request y mueve la tarea a **Para Code-Review**.
+| `$ alfred finish ...` | Una vez aceptado el Pull-Request en Github, finaliza el desarrollo utilizando Hubflow y mueve la tarea a **Producción** o **Aceptado**, según corresponda.
 | | Para `hotfixes`, se mezcla la rama a `master` y `development`. 
 | Tipos de desarrollo y formatos de nombramiento | `... feature <RKM-XXXX>`: Para tareas de tipo **Critical**, **Normal** y **Minor**, tomando el ID de la tarea en YouTrack. 
 | | `... hotfix <X.Y.ISSUE_ID>`: Para tareas de tipo **ShowStopper** y **Blocker**. Se utiliza una forma de Semantic versioning que toma el número de tarea asignado en YouTrack (de la misma forma que para un feature, pero sin RKM).  
