@@ -91,7 +91,7 @@ def start(type, name):
 @greet.command()
 @click.argument('type')
 @click.argument('name')
-def finish(type, name):
+def submit(type, name):
     if not is_folder_github_repo():
         print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
         exit()
@@ -105,7 +105,7 @@ def finish(type, name):
 @greet.command()
 @click.argument('type')
 @click.argument('name')
-def close(type, name):
+def finish(type, name):
     if not is_folder_github_repo():
         print_msg(IconsEnum.ERROR, 'Debes localizarte en un repositorio válido')
         exit()

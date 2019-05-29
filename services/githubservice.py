@@ -48,7 +48,7 @@ def hubflow_interaction(action, type, name, hf=False):
         if hf_output.returncode:
             print_msg(IconsEnum.ERROR, 'Hubo un error creando la rama')
             exit()
-    elif action == "close":
+    elif action == "finish":
         hf_output = subprocess.run(['git', 'hf', type, 'finish', name])
         if hf_output.returncode:
             print_msg(IconsEnum.ERROR, 'Hubo un error finalizando la tarea')
