@@ -16,18 +16,18 @@
     "default": {
         "boto3": {
             "hashes": [
-                "sha256:c42d6e09f314da9ddd5742f864073a5623d8f54ff94ba2d9aa6c90321a9a92aa",
-                "sha256:c939b576327e962af65d083b75e122f7e3d69166f4951238726121d60216aee8"
+                "sha256:0cb3a5d93e631f4b36727a6780a9d4fed586cab46c2a154a0e08b0413ca2a970",
+                "sha256:352a5a8bd26ba771ad86ec23ab632a9402fab2d9609243011253241ae1f5889d"
             ],
             "index": "pypi",
-            "version": "==1.9.158"
+            "version": "==1.9.161"
         },
         "botocore": {
             "hashes": [
-                "sha256:20ab7eeb3e82f1d8a3bc12a286ce073a0ba1a0d189e7c6dd9d1140a213161692",
-                "sha256:ed3e79cb3d271e5e58d87fba3bd90549b97c5aba26a9de2228212ccb8ef9f11b"
+                "sha256:256c84c5b559a7aa6735bd7cc15c94c6e60a1ed0469b6c55fb5888d6cee48d57",
+                "sha256:424c01d241c40e29bf90cc939450676a30ef1a54ee7a219bb2bc6bb876eba7b0"
             ],
-            "version": "==1.12.158"
+            "version": "==1.12.161"
         },
         "certifi": {
             "hashes": [
@@ -112,10 +112,10 @@
         },
         "s3transfer": {
             "hashes": [
-                "sha256:7b9ad3213bff7d357f888e0fab5101b56fa1a0548ee77d121c3a3dbfbef4cb2e",
-                "sha256:f23d5cb7d862b104401d9021fc82e5fa0e0cf57b7660a1331425aab0c691d021"
+                "sha256:6efc926738a3cd576c2a79725fed9afde92378aa5c6a957e3af010cb019fac9d",
+                "sha256:b780f2411b824cb541dbcd2c713d0cb61c7d1bcadae204cdddda2b35cef493ba"
             ],
-            "version": "==0.2.0"
+            "version": "==0.2.1"
         },
         "six": {
             "hashes": [
