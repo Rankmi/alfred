@@ -8,7 +8,7 @@ def release_alfred(version):
         return 403
 
     with open("_version.py", "w") as f:
-        f.write("__version__ = '" + version + "'")
+        f.write("__version__ = '" + version + "'\n")
 
     print("Releasing binary for Mac systems.")
     subprocess.run(["./generator.sh", "ins", "gen"])
