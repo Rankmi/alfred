@@ -1,7 +1,6 @@
 from helpers.issueupdater import update_issue, STATES
 from helpers.colors import HEADER, BOLD, ENDC, GREEN, SHOWSTOPPER, CRITICAL
-from services.youtrackservice import get_issue_by_id
-from helpers.configfilehelper import get_config_key, GLOBAL_SECTION, YT_URL
+from services.youtrackservice import get_issue_by_id, get_youtrack_url
 
 
 def print_issue(issue):
@@ -12,7 +11,7 @@ def print_issue(issue):
           "el", issue.context.created)
     print(HEADER + BOLD + issue.summary + ENDC)
     print("[" + issue.state + "]", "[" + issue.priority + "]")
-    print("Puedes revisarlo aqui: " + get_config_key(GLOBAL_SECTION, YT_URL) + "/issue/" + issue.id)
+    print("Puedes revisarlo aqui: " + get_youtrack_url() + "/issue/" + issue.id)
     print("--------------------------------------------------------------------------")
 
     print(GREEN + BOLD + "Descripcion:" + ENDC)
