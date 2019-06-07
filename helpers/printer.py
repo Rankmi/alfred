@@ -1,6 +1,7 @@
 from helpers.issueupdater import update_issue, STATES
-from helpers.colors import HEADER, BOLD, ENDC, GREEN, SHOWSTOPPER, CRITICAL
+from helpers.colors import HEADER, BOLD, ENDC, GREEN, SHOWSTOPPER, CRITICAL, print_msg, IconsEnum
 from services.youtrackservice import get_issue_by_id, get_youtrack_url
+from services.databaseservice import get_username
 
 
 def print_issue(issue):
@@ -64,3 +65,19 @@ def print_issue_list(issues):
             print("Debes ingresar un índice válido.")
     else:
         print(BOLD + "No tienes tickets para revisar en este estado." + ENDC)
+
+
+def print_env(env):
+    print_msg(IconsEnum.INFO, f"{env.name}")
+    print("|-- IP:", env.database_ip)
+    print("|-- Port:", env.port)
+    print("|-- DB Username:", env.database_username)
+    print("|-- DB Password:", env.database_password)
+    print("|-- DB Name: rankmi")
+
+
+def print_envs_list(envs):
+    print_msg(IconsEnum.UNICORN, f"Environments creados para {get_username()}")
+    for env in envs:
+        print("--------------------------------------------------------------------------")
+        print_env(env)
