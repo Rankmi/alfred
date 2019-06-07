@@ -7,8 +7,7 @@ import requests
 from helpers.colors import HEADER, BOLD, CRITICAL, GREEN, ENDC, print_msg, IconsEnum
 from services.githubservice import create_pr, hubflow_interaction, is_folder_github_repo
 from services.issueclasses import YoutrackPriorities
-from services.youtrackservice import get_issue_by_id, execute_command, get_header
-from helpers.configfilehelper import GLOBAL_SECTION, YT_URL, get_config_key
+from services.youtrackservice import get_issue_by_id, execute_command, get_header, get_youtrack_url
 
 STATES = {
     "todo": "Por hacer",
@@ -66,7 +65,7 @@ def finish_issue(issueid):
     current_description = issue.context.description if issue.context.description else ""
     pr_description = current_description + "\n\nPR " + \
                      os.getcwd().split("/")[-1].title() + ":\n" + pr_url + " *via **alfred***"
-    request_url = get_config_key(GLOBAL_SECTION, YT_URL) + "/api/issues/" + issue.id + "?fields=description"
+    request_url = get_youtrack_url() + "/api/issues/" + issue.id + "?fields=description"
     user_request = requests.post(request_url, headers=get_header(), json={'description': pr_description})
     print_msg(IconsEnum.SUCCESS, "Pull-Request agregado a descripción del ticket")
 

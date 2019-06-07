@@ -100,6 +100,7 @@ def get_aws_access_key():
     if aws_access_key:
         return aws_access_key
     else:
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de AWS")
         reset_aws_credentials()
         return get_config_key(AWS_SECTION, USER_KEY)
 
@@ -109,6 +110,7 @@ def get_aws_access_secret():
     if aws_access_secret:
         return aws_access_secret
     else:
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de AWS")
         reset_aws_credentials()
         return get_config_key(AWS_SECTION, PASS_KEY)
 
@@ -118,5 +120,6 @@ def get_aws_bucket():
     if aws_bucket:
         return aws_bucket
     else:
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de AWS")
         reset_aws_credentials()
         return get_config_key(AWS_SECTION, AWS_BUCKET_KEY)
