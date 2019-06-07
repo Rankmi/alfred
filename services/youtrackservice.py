@@ -4,7 +4,7 @@ import requests
 from sys import exit
 
 from helpers.configfilehelper import get_config_key, YOUTRACK_SECTION, YOUTRACK_KEY, USER_KEY, \
-    reset_youtrack_credentials, GLOBAL_SECTION, YT_URL
+    reset_youtrack_credentials
 from services.issueclasses import Issue
 from helpers.colors import print_msg, IconsEnum
 
@@ -88,5 +88,4 @@ def get_header():
 
 
 def get_youtrack_url():
-    yt_baseurl = get_config_key(GLOBAL_SECTION, YT_URL)
-    return yt_baseurl if yt_baseurl else "https://youtrack.rankmi.com"
+    return "https://youtrack.rankmi.com"

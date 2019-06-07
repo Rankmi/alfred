@@ -13,14 +13,12 @@ config_location = str(expanduser("~") + "/" + __config_filename)
 AWS_SECTION = "AWS"
 GITHUB_SECTION = "GITHUB"
 YOUTRACK_SECTION = "YOUTRACK"
-GLOBAL_SECTION = "GLOBAL"
 
 USER_KEY = "User"
 PASS_KEY = "Pass"
 YOUTRACK_KEY = "Key"
 AWS_BUCKET_KEY = "Bucket"
 GH_TOKEN = "Token"
-YT_URL = "BaseUrl"
 
 
 def reset_credentials(interface):
@@ -28,7 +26,6 @@ def reset_credentials(interface):
         "aws": reset_aws_credentials,
         "youtrack": reset_youtrack_credentials,
         "github": reset_github_credentials,
-        "global": reset_global_credentials,
         "all": reset_all_credentials
     }
 
@@ -59,15 +56,9 @@ def reset_youtrack_credentials():
 def reset_github_credentials():
     github_username = input("Github Username: ")
     github_password = getpass.getpass("Github Password: ")
-    set_config_file(AlfredConfig(github_username=github_username, github_password=github_password))
-
-
-def reset_global_credentials():
-    youtrack_url = input("Youtrack URL: ")
     github_token = input("Github Token: ")
-    if not youtrack_url:
-        youtrack_url = "https://youtrack.rankmi.com"
-    set_config_file(AlfredConfig(github_token=github_token, youtrack_url=youtrack_url))
+    set_config_file(AlfredConfig(github_username=github_username, github_password=github_password,
+                                 github_token=github_token))
 
 
 def reset_all_credentials():
@@ -97,10 +88,8 @@ def set_config_file(user_config):
         config[GITHUB_SECTION] = {}
         config[GITHUB_SECTION][USER_KEY] = user_config.github_username
         config[GITHUB_SECTION][PASS_KEY] = user_config.github_password
-    if user_config.youtrack_url and user_config.github_token:
-        config[GLOBAL_SECTION] = {}
-        config[GLOBAL_SECTION][YT_URL] = user_config.youtrack_url
-        config[GLOBAL_SECTION][GH_TOKEN] = user_config.github_token
+    if user_config.github_token:
+        config[GITHUB_SECTION][GH_TOKEN] = user_config.github_token
 
     with open(str(config_location), "w+") as file:
         config.write(file)

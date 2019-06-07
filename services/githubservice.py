@@ -7,8 +7,7 @@ from sys import exit
 from github import Github, GithubException
 
 from helpers.configfilehelper import get_config_key, reset_github_credentials,\
-                                     GITHUB_SECTION, USER_KEY, PASS_KEY, GLOBAL_SECTION, GH_TOKEN
-from services.youtrackservice import get_issue_by_id
+                                     GITHUB_SECTION, USER_KEY, PASS_KEY, GH_TOKEN
 from helpers.colors import print_msg, IconsEnum
 from _version import __version__
 
@@ -161,6 +160,7 @@ def upload_asset(upload_url):
 
 
 def download_last_release():
+    token = 'token ' + get_token()
     assets = get_last_release()['assets']
 
     for asset in assets:
@@ -171,7 +171,8 @@ def download_last_release():
 
     file = requests.get(asset_url,
                         headers={
-                            'Accept': 'application/octet-stream'
+                            'Accept': 'application/octet-stream',
+                            'Authorization': token
                         },
                         stream=True)
 
@@ -182,7 +183,9 @@ def download_last_release():
 
 
 def get_last_release():
-    response = requests.get("https://api.github.com/repos/Rankmi/alfred/releases/latest")
+    token = 'token ' + get_token()
+    response = requests.get("https://api.github.com/repos/Rankmi/alfred/releases/latest",
+                            headers={'Authorization': token})
     if response.status_code == 200:
         return response.json()
     else:
@@ -220,6 +223,7 @@ def get_username():
     if username:
         return username
     else:
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de Github")
         reset_github_credentials()
         return get_config_key(GITHUB_SECTION, USER_KEY)
 
@@ -229,14 +233,16 @@ def get_password():
     if password:
         return password
     else:
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de Github")
         reset_github_credentials()
         return get_config_key(GITHUB_SECTION, PASS_KEY)
 
 
 def get_token():
-    token = get_config_key(GLOBAL_SECTION, GH_TOKEN)
+    token = get_config_key(GITHUB_SECTION, GH_TOKEN)
     if token:
         return token
     else:
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de Github")
         reset_github_credentials()
-        return get_config_key(GLOBAL_SECTION, GH_TOKEN)
+        return get_config_key(GITHUB_SECTION, GH_TOKEN)
