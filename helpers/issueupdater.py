@@ -82,7 +82,7 @@ def accept_issue():
 
     print_msg(IconsEnum.UNICORN, "Finalizando etapa de QA de " + HEADER + issue.id)
 
-    if issue.priority in ["ShowStopper", "Blocker", "Critical"]:
+    if issue.priority in ["ShowStopper", "Blocker"]:
         subprocess.run(['git', 'hf', 'hotfix', 'finish', current_branch.split('/')[1]])
         execute_command(issue, "State", STATES["production"])
         print_msg(IconsEnum.SUCCESS, "Estado de la tarea fue cambiado a " + GREEN + "'Producción'")

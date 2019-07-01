@@ -3,8 +3,8 @@ from enum import Enum
 
 
 class YoutrackPriorities(Enum):
-    HOTFIXES = ['ShowStopper', 'Blocker', 'Critical']
-    FEATURES = ['Normal', 'Minor']
+    HOTFIXES = ['ShowStopper', 'Blocker']
+    FEATURES = ['Normal', 'Minor', 'Critical']
 
 
 class Issue:
