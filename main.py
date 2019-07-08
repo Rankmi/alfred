@@ -4,16 +4,18 @@
 
 import click
 from sys import exit
+from http import HTTPStatus
 from _version import __version__
 from helpers.configfilehelper import reset_credentials
 from helpers.issueupdater import update_issue, finish_issue, STATES
-from helpers.printer import print_issue, print_issue_list
+from helpers.printer import print_issue, print_issue_list, print_env, print_envs_list
 from services.awsservice import get_backup, dumpbackup
+from services.databaseservice import get_environments_list, get_environment, create_environment, delete_environment
 from services.youtrackservice import get_issues_by_state, get_issue_by_id, execute_command
 from services.githubservice import create_release, upload_asset, download_last_release, update_binary, \
     is_folder_github_repo, hubflow_interaction
 from services.releaser import release_alfred
-from helpers.colors import BOLD, HEADER, ENDC, print_msg, GREEN, CRITICAL, IconsEnum
+from helpers.colors import BOLD, HEADER, ENDC, print_msg, GREEN, IconsEnum
 
 
 @click.group(invoke_without_command=True)
@@ -125,6 +127,24 @@ def finish(type, name):
 @click.argument('issue')
 def issue(issue):
     print_issue(get_issue_by_id(issue))
+
+
+@greet.command()
+@click.argument('date')
+def env(date):
+    if date == 'list':
+        print_envs_list(get_environments_list())
+    elif date[0] == 'n':
+        environment = create_environment(date[2:])
+        if environment == HTTPStatus.FORBIDDEN:
+            index = input("¿Qué environment deseas eliminar? (fecha): ")
+            delete_environment(index)
+        else:
+            print_env(environment)
+    elif date[0] == 's':
+        print_env(get_environment(date[2:]))
+    elif date[0] == 'd':
+        delete_environment(date[2:])
 
 
 @greet.command()

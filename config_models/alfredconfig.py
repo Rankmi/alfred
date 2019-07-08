@@ -8,7 +8,8 @@ class AlfredConfig:
                  youtrack_url="https://youtrack.rankmi.com",
                  github_username=None,
                  github_password=None,
-                 github_token=None):
+                 github_token=None,
+                 kato_baseurl=None):
         self.user = user
         self.password = password
         self.bucket = bucket
@@ -18,3 +19,4 @@ class AlfredConfig:
         self.github_username = github_username
         self.github_password = github_password
         self.github_token = github_token
+        self.kato_baseurl = kato_baseurl
