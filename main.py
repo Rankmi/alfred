@@ -130,21 +130,22 @@ def issue(issue):
 
 
 @greet.command()
-@click.argument('date')
-def env(date):
-    if date == 'list':
+@click.argument('action')
+@click.argument('date', required=False)
+def env(action, date):
+    if action == 'list':
         print_envs_list(get_environments_list())
-    elif date[0] == 'n':
-        environment = create_environment(date[2:])
+    elif action == 'n':
+        environment = create_environment(date)
         if environment == HTTPStatus.FORBIDDEN:
-            index = input("¿Qué environment deseas eliminar? (fecha): ")
-            delete_environment(index)
+            print_envs_list(get_environments_list())
+            delete_environment(input("¿Qué fecha quieres eliminar?: "))
         else:
             print_env(environment)
-    elif date[0] == 's':
-        print_env(get_environment(date[2:]))
-    elif date[0] == 'd':
-        delete_environment(date[2:])
+    elif action == 's':
+        print_env(get_environment(date))
+    elif action == 'd':
+        delete_environment(date)
 
 
 @greet.command()
