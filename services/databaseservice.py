@@ -4,6 +4,7 @@ from http import HTTPStatus
 
 from helpers.configfilehelper import get_config_key, reset_kato_credentials, KATO_SECTION, USER_KEY, API_URL
 from helpers.colors import print_msg, IconsEnum
+from helpers.environmentclass import Environment
 from services.githubservice import get_username
 
 
@@ -11,9 +12,9 @@ def get_environments_list():
     username = get_username()
     environments_url = get_kato_url() + f"/{username}/database"
     request = requests.get(environments_url)
-    if request.ok:
-        return request
-    elif request.status_code == HTTPStatus.NOT_FOUND:
+    if request.ok and request.json():
+        return [Environment.from_dict(env) for env in request.json()] 
+    elif request.ok:
         print_msg(IconsEnum.INFO, "No tienes environments creados")
         exit()
     else:
@@ -26,12 +27,12 @@ def get_environment(date):
     environment_url = get_kato_url() + f"/{username}/database/{date}"
     request = requests.get(environment_url)
     if request.ok:
-        return request
+        return Environment.from_dict(request.json())
     elif request.status_code == HTTPStatus.NOT_FOUND:
-        print_msg(IconsEnum.INFO, "El environment indicado no existe")
+        print_msg(IconsEnum.ERROR, "El environment indicado no existe")
+        exit()
     else:
-        print_msg(IconsEnum.ERROR, "No se pudo obtener información del environment solicitado")
-        return request.status_code
+        print_msg(IconsEnum.ERROR, f"<{request.status_code}> No se pudo obtener información del environment solicitado")
 
 
 def create_environment(date):
@@ -41,7 +42,7 @@ def create_environment(date):
     request = requests.post(environment_url)
     if request.ok:
         print_msg(IconsEnum.SUCCESS, "El environment fue creado correctamente")
-        return request
+        return Environment.from_dict(request.json())
     elif request.status_code == HTTPStatus.FORBIDDEN:
         print_msg(IconsEnum.ERROR, "Has alcanzado el máximo de environment simultaneos.")
         return request.status_code
@@ -56,7 +57,6 @@ def delete_environment(date):
     request = requests.delete(environment_url)
     if request.ok:
         print_msg(IconsEnum.SUCCESS, "El environment fue eliminado correctamente")
-        return request
     elif request.status_code == HTTPStatus.NOT_FOUND:
         print_msg(IconsEnum.ERROR, "El environment indicado no existe")
     else:
