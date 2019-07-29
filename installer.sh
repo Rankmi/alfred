@@ -17,8 +17,8 @@ case ${machine} in
         ${LINUX})
             echo "Linux detected, installing dependencies using apt"
             apt update
-            apt install -y python3 python3-pip
-			pip3 install pipenv;;
+            apt install -y python3.7 python3-pip
+			      python3.7 -m pip install pipenv;;
         ${MAC})
             echo "MacOs detected, installing dependencies using brew"
             brew update
@@ -27,7 +27,7 @@ case ${machine} in
             echo "Your system is not supported, I'm sorry";;
 esac
 
-pipenv run pipenv install
+pipenv install
 chmod +x ./alfred.sh
 
 if [ "$1" == "gbin" ]; then 
