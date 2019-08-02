@@ -17,7 +17,7 @@ case ${machine} in
         ${LINUX})
             echo "Linux detected, installing dependencies using apt"
             apt update
-            apt install -y python3.7 python3-pip
+            apt install -y python3.7 python3-pip python3.7-dev
 			      python3.7 -m pip install pipenv;;
         ${MAC})
             echo "MacOs detected, installing dependencies using brew"
