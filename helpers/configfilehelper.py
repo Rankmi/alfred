@@ -53,11 +53,11 @@ def reset_aws_credentials():
 def reset_youtrack_credentials():
     youtrack_key = input("Youtrack Key: ")
     youtrack_username = input("Youtrack Username: ")
-    youtrack_baseurl = input("Youtrack API: ")
-    if not youtrack_baseurl:
-        youtrack_baseurl = "https://youtrack.rankmi.com/"
+    youtrack_url = input("Youtrack API: ")
+    if not youtrack_url:
+        youtrack_url = "https://youtrack.rankmi.com/"
     set_config_file(AlfredConfig(youtrack_token=youtrack_key, youtrack_username=youtrack_username,
-                                 youtrack_url=youtrack_baseurl))
+                                 youtrack_url=youtrack_url))
 
 
 def reset_github_credentials():
@@ -99,7 +99,7 @@ def set_config_file(user_config):
         config[YOUTRACK_SECTION] = {}
         config[YOUTRACK_SECTION][YOUTRACK_KEY] = user_config.youtrack_token
         config[YOUTRACK_SECTION][USER_KEY] = user_config.youtrack_username
-        config[YOUTRACK_SECTION][API_URL] = user_config.youtrack_baseurl
+        config[YOUTRACK_SECTION][API_URL] = user_config.youtrack_url
     if user_config.github_username and user_config.github_password:
         config[GITHUB_SECTION] = {}
         config[GITHUB_SECTION][USER_KEY] = user_config.github_username
