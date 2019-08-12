@@ -9,7 +9,7 @@ from services.githubservice import get_username
 
 
 def get_environments_list():
-    username = get_username()
+    username = get_verified_username()
     environments_url = get_kato_url() + f"/{username}/database"
     request = requests.get(environments_url)
     if request.ok and request.json():
@@ -23,7 +23,7 @@ def get_environments_list():
 
 
 def get_environment(date):
-    username = get_username()
+    username = get_verified_username()
     environment_url = get_kato_url() + f"/{username}/database/{date}"
     request = requests.get(environment_url)
     if request.ok:
@@ -36,7 +36,7 @@ def get_environment(date):
 
 
 def create_environment(date):
-    username = get_username()
+    username = get_verified_username()
     environment_url = get_kato_url() + f"/{username}/database/{date}"
     print_msg(IconsEnum.UNICORN, "Creando environment en Kato para %s" % date)
     request = requests.post(environment_url)
@@ -52,7 +52,7 @@ def create_environment(date):
 
 
 def delete_environment(date):
-    username = get_username()
+    username = get_verified_username()
     environment_url = get_kato_url() + f"/{username}/database/{date}"
     request = requests.delete(environment_url)
     if request.ok:
@@ -72,3 +72,11 @@ def get_kato_url():
         print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales para Kato")
         reset_kato_credentials()
         return get_config_key(KATO_SECTION, API_URL)
+
+
+def get_verified_username():
+    username = get_username()
+    if "@" in username:
+        split_username = username.split("@")
+        username = split_username[0]
+    return username

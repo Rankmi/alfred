@@ -71,7 +71,7 @@ def print_env(env):
     print_msg(IconsEnum.INFO, f"{env.container_name}")
     print("|-- IP:", env.container_ip)
     print("|-- Port:", env.database_port)
-    print("|-- DB Username:", env.database_username)
+    print("|-- DB Username: rankmi-database")
     print("|-- DB Password:", env.database_password)
     print("|-- DB Name: ", env.database_name)
 

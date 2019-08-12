@@ -18,7 +18,7 @@ Para encontrar la útlima versión de **alfred**, puedes revisar la lista de [Re
 Para acceder a **alfred** desde cualquier directorio, debes posicionarlo en `/usr/local/bin`
 
 ``` console
-$ mv /path/to/alfred /usr/local/bin/
+$ mv /path/to/alfred-for-<os> /usr/local/bin/alfred
 ```
 
 ## Uso
@@ -30,18 +30,17 @@ La primera vez que la aplicación se ejecuta, la aplicación te solicitará las 
 En caso de que necesites modificar las credenciales de algún servicio, puedes hacerlo con el siguiente comando:
 
 ``` console 
- # Los servicios pueden ser: aws, github, youtrack, all 
+ # Los servicios pueden ser: aws, github, youtrack, kato, all 
  $ alfred reset <service>
 ```
 #### Credenciales Github:
 Para obtener el token de github se debe ir a Settings -> Developer settings -> Personal access tokens y generar un token nuevo.
 
 #### Credenciales AWS:
-Conversar con el devops
+Conversar con el DevOps
 
 #### Credenciales Youtrack
-Solicitar con el devops
-
+Solicitar al DevOps
 
 ### Flujo de desarrollo
 
@@ -93,6 +92,29 @@ A partir de la ID de un ticket, recibirás información relevante sobre la tarea
  # La ID puede ser en formato RKM-XXXX o solo XXXX
  $ alfred issue <ID>
 ```
+
+### Kato
+
+Kato es el servicio interno de distribución de bases de datos. Para solicitar una ambiente, debes ejecutar:
+``` console
+# DATE debe ser en el formato YYYY_MM_DD
+$ alfred env n <DATE>
+```
+
+Otras acciones con los ambientes son:
+```console
+# Eliminar un ambiente con fecha DATE
+$ alfred env d <DATE>
+
+# Revisar un ambiente especifico
+$ alfred env s <DATE>
+
+# Obtener el listado de ambientes creados
+$ alfred env list
+```
+
+La URL del API de Kato debe ser solicitada al DevOps
+
 
 ### AWS
 
