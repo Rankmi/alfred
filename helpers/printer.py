@@ -1,7 +1,7 @@
 from helpers.issueupdater import update_issue, STATES
 from helpers.colors import HEADER, BOLD, ENDC, GREEN, SHOWSTOPPER, CRITICAL, print_msg, IconsEnum
 from services.youtrackservice import get_issue_by_id, get_youtrack_url
-from services.databaseservice import get_username
+from services.databaseservice import get_verified_username
 
 SEPARATOR_LENGTH = 75
 
@@ -77,7 +77,7 @@ def print_env(env):
 
 
 def print_envs_list(envs):
-    print_msg(IconsEnum.UNICORN, f"Environments creados para {get_username()}")
+    print_msg(IconsEnum.UNICORN, f"Environments creados para {get_verified_username()}")
     for env in envs:
         print("-" * SEPARATOR_LENGTH)
         print_env(env)
