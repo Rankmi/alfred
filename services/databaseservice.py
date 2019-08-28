@@ -2,10 +2,10 @@ import requests
 from sys import exit
 from http import HTTPStatus
 
-from helpers.configfilehelper import get_config_key, reset_kato_credentials, KATO_SECTION, USER_KEY, API_URL
+from helpers.configfilehelper import get_config_key, reset_kato_credentials, KATO_SECTION, API_URL
 from helpers.colors import print_msg, IconsEnum
 from helpers.environmentclass import Environment
-from services.githubservice import get_username
+from services.youtrackservice import get_youtrack_user
 
 
 def get_environments_list():
@@ -75,7 +75,7 @@ def get_kato_url():
 
 
 def get_verified_username():
-    username = get_username()
+    username = get_youtrack_user()
     if "@" in username:
         split_username = username.split("@")
         username = split_username[0]
