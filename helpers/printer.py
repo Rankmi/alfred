@@ -73,7 +73,7 @@ def print_env(env):
     print("|-- Port:", env.database_port)
     print("|-- DB Username: rankmi-database")
     print("|-- DB Password:", env.database_password)
-    print("|-- DB Name: ", env.database_name)
+    print("|-- DB Name:", env.database_name)
 
 
 def print_envs_list(envs):
