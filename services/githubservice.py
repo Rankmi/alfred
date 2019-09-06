@@ -200,7 +200,7 @@ def update_binary():
         print_msg(IconsEnum.INFO, "Your current alfred version is up-to-date")
         exit()
 
-    print_msg(IconsEnum.INFO, "Downloading last binary realeased for" + platform.system())
+    print_msg(IconsEnum.INFO, "Downloading last binary realeased for " + platform.system())
     download = download_last_release()
 
     if download:
