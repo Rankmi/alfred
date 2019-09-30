@@ -83,3 +83,9 @@ def print_envs_list(envs):
         print_env(env)
     print("-" * SEPARATOR_LENGTH)
 
+
+def print_available_images(images: list, show: int = None):
+    dates = images[0:show]
+    print_msg(IconsEnum.INFO, f"Las últimas {len(dates)} imágenes disponibles son:")
+    for date in dates:
+        print(date)
