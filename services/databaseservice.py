@@ -46,9 +46,12 @@ def create_environment(date):
     elif request.status_code == HTTPStatus.FORBIDDEN:
         print_msg(IconsEnum.ERROR, "Has alcanzado el máximo de environment simultaneos.")
         return request.status_code
-    else:
-        print_msg(IconsEnum.ERROR, "Hubo un error realizando la solicitud")
+    elif request.status_code == HTTPStatus.NOT_FOUND:
+        print_msg(IconsEnum.ERROR, "La imagen para el día indicado no existe.")
         return request.status_code
+    else:
+        print_msg(IconsEnum.ERROR, f"<{request.status_code}> Hubo un error realizando la solicitud")
+        exit()
 
 
 def delete_environment(date):
@@ -62,6 +65,16 @@ def delete_environment(date):
     else:
         print_msg(IconsEnum.ERROR, "Hubo un error eliminando el environment")
         return request.status_code
+
+
+def get_available_images():
+    request_url = get_kato_url() + "/docker-images"
+    request = requests.get(request_url)
+    if request.ok:
+        return request.json()
+    else:
+        print_msg(IconsEnum.ERROR, "Hubo un problema solicitando la lista de imagenes disponibles.")
+        exit()
 
 
 def get_kato_url():

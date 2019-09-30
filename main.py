@@ -8,9 +8,10 @@ from http import HTTPStatus
 from _version import __version__
 from helpers.configfilehelper import reset_credentials
 from helpers.issueupdater import update_issue, finish_issue, STATES
-from helpers.printer import print_issue, print_issue_list, print_env, print_envs_list
+from helpers.printer import print_issue, print_issue_list, print_env, print_envs_list, print_available_images
 from services.awsservice import get_backup, dumpbackup
-from services.databaseservice import get_environments_list, get_environment, create_environment, delete_environment
+from services.databaseservice import get_environments_list, get_environment, create_environment, delete_environment, \
+    get_available_images
 from services.youtrackservice import get_issues_by_state, get_issue_by_id, execute_command
 from services.githubservice import create_release, upload_asset, download_last_release, update_binary, \
     is_folder_github_repo, hubflow_interaction
@@ -135,11 +136,17 @@ def issue(issue):
 def env(action, date):
     if action == 'list':
         print_envs_list(get_environments_list())
+    elif action == 'av':
+        available_images = get_available_images()
+        print_available_images(available_images)
     elif action == 'n':
         environment = create_environment(date)
         if environment == HTTPStatus.FORBIDDEN:
             print_envs_list(get_environments_list())
             delete_environment(input("¿Qué fecha quieres eliminar?: "))
+        elif environment == HTTPStatus.NOT_FOUND:
+            available_images = get_available_images()
+            print_available_images(available_images, 5)
         else:
             print_env(environment)
     elif action == 's':
