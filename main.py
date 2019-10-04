@@ -10,7 +10,8 @@ from helpers.configfilehelper import reset_credentials
 from helpers.issueupdater import update_issue, finish_issue, STATES
 from helpers.printer import print_issue, print_issue_list, print_env, print_envs_list
 from services.awsservice import get_backup, dumpbackup
-from services.databaseservice import get_environments_list, get_environment, create_environment, delete_environment
+from services.databaseservice import get_environments_list, get_environment, \
+    create_environment, delete_environment, restart_environment
 from services.youtrackservice import get_issues_by_state, get_issue_by_id, execute_command
 from services.githubservice import create_release, upload_asset, download_last_release, update_binary, \
     is_folder_github_repo, hubflow_interaction
@@ -146,6 +147,8 @@ def env(action, date):
         print_env(get_environment(date))
     elif action == 'd':
         delete_environment(date)
+    elif action == 'r':
+        restart_environment(date)
 
 
 @greet.command()

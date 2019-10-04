@@ -64,6 +64,19 @@ def delete_environment(date):
         return request.status_code
 
 
+def restart_environment(date):
+    username = get_verified_username()
+    environment_url = get_kato_url() + f"/{username}/database/restart/{date}"
+    request = requests.post(environment_url)
+    if request.ok:
+        print_msg(IconsEnum.SUCCESS, "El environment fue reiniciado correctamente")
+    elif request.status_code == HTTPStatus.NOT_FOUND:
+        print_msg(IconsEnum.ERROR, "El environment indicado no existe")
+    else:
+        print_msg(IconsEnum.ERROR, "Hubo un error reiniciando el environment")
+        return request.status_code
+
+
 def get_kato_url():
     url = get_config_key(KATO_SECTION, API_URL)
     if url:
