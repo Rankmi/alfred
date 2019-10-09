@@ -10,6 +10,8 @@ from helpers.configfilehelper import reset_credentials
 from helpers.issueupdater import update_issue, finish_issue, STATES
 from helpers.printer import print_issue, print_issue_list, print_env, print_envs_list, print_available_images
 from services.awsservice import get_backup, dumpbackup
+from services.databaseservice import get_environments_list, get_environment, \
+    create_environment, delete_environment, restart_environment
 from services.databaseservice import get_environments_list, get_environment, create_environment, delete_environment, \
     get_available_images
 from services.youtrackservice import get_issues_by_state, get_issue_by_id, execute_command
@@ -153,6 +155,8 @@ def env(action, date):
         print_env(get_environment(date))
     elif action == 'd':
         delete_environment(date)
+    elif action == 'r':
+        restart_environment(date)
 
 
 @greet.command()
