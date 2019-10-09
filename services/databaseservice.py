@@ -50,8 +50,8 @@ def create_environment(date):
         print_msg(IconsEnum.ERROR, "La imagen para el día indicado no existe.")
         return request.status_code
     else:
-        print_msg(IconsEnum.ERROR, f"<{request.status_code}> Hubo un error realizando la solicitud")
-        exit()
+        print_msg(IconsEnum.ERROR, "Hubo un error realizando la solicitud")
+        return request.status_code
 
 
 def delete_environment(date):
@@ -75,6 +75,19 @@ def get_available_images():
     else:
         print_msg(IconsEnum.ERROR, "Hubo un problema solicitando la lista de imagenes disponibles.")
         exit()
+
+
+def restart_environment(date):
+    username = get_verified_username()
+    environment_url = get_kato_url() + f"/{username}/database/restart/{date}"
+    request = requests.post(environment_url)
+    if request.ok:
+        print_msg(IconsEnum.SUCCESS, "El environment fue reiniciado correctamente")
+    elif request.status_code == HTTPStatus.NOT_FOUND:
+        print_msg(IconsEnum.ERROR, "El environment indicado no existe")
+    else:
+        print_msg(IconsEnum.ERROR, "Hubo un error reiniciando el environment")
+        return request.status_code
 
 
 def get_kato_url():
