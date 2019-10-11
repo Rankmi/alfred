@@ -4,15 +4,16 @@ from services.githubservice import upload_asset, create_release
 from services.releaser import release_alfred
 
 
-@click.group(name='dev', help='For Alfred development')
+@click.group(name="dev", help="For Alfred development")
 def development():
     pass
 
 
-@development.command()
-@click.argument("action")
-def release(action):
-    if action == "new":
+@development.command(help="Used for releasing Alfred versions", options_metavar="<option>")
+@click.option("--new", is_flag=True, help="Creates a release and uploads a binary for the current OS")
+@click.option("-v", "--version", help="Initiates the whole release flow for the given semver", metavar="<semver>")
+def release(new, version):
+    if new:
         upload_asset(create_release())
-    elif action[0] == "v":
-        release_alfred(action[1:])
+    else:
+        release_alfred(version)
