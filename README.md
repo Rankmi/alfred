@@ -5,6 +5,7 @@
 - [Uso](#uso)
     - [Credenciales](#credenciales)
     - [Flujo de desarrollo](#flujo-de-desarrollo)
+    - [Kato](#kato)
     - [AWS](#aws)
     - [GitHub](#github)
     - [YouTrack](#youtrack)
@@ -19,6 +20,11 @@ Para acceder a **alfred** desde cualquier directorio, debes posicionarlo en `/us
 
 ``` console
 $ mv /path/to/alfred-for-<os> /usr/local/bin/alfred
+```
+
+Puedes comprobar la instalación revisando la versión de alfred con
+``` console
+$ alfred --help
 ```
 
 ## Uso
@@ -44,36 +50,45 @@ Solicitar al DevOps
 
 ### Flujo de desarrollo
 
-Al realizar acciones que involucren el uso de Gitflow, debes utilizar: 
+Al realizar acciones que involucren el uso de Gitflow, debes utilizar `alfred flow ...`: 
 
 #### Para la interacción con Hubflow
 
 | Comando | Descripción
 | --- | ---
-| `$ alfred start ...` | Crea una rama correspondiente al tipo de desarrollo utilizando Hubflow, y cambia la tarea en YouTrack a **En Progreso**.
-| `$ alfred submit ...` | Para `features` y `hotfixes`, crea un Pull-Request en Github para la rama, actualiza la descripción del ticket de Youtrack con un link a este Pull-Request y mueve la tarea a **Para Code-Review**.
-| `$ alfred finish ...` | Una vez aceptado el Pull-Request en Github, finaliza el desarrollo utilizando Hubflow y mueve la tarea a **Producción** o **Aceptado**, según corresponda.
-| | Para `hotfixes`, se mezcla la rama a `master` y `development`. 
-| Tipos de desarrollo y formatos de nombramiento | `... feature <RKM-XXXX>`: Para tareas de tipo **Critical**, **Normal** y **Minor**, tomando el ID de la tarea en YouTrack. 
-| | `... hotfix <X.Y.ISSUE_ID>`: Para tareas de tipo **ShowStopper** y **Blocker**. Se utiliza una forma de Semantic versioning que toma el número de tarea asignado en YouTrack (de la misma forma que para un feature, pero sin RKM).  
-| | `... release <X.Y.ISSUE_ID>`: Crea ramas para App y API, utilizando el mismo formato de nombre que un hotfix (reservado para Team Leaders y CTO). 
+| `[...] flow start <ft/hf>` | Crea una rama correspondiente al tipo de desarrollo utilizando Hubflow, y cambia la tarea en YouTrack a **En Progreso**.
+| `[...] flow submit <ft/hf>` | Para `features` y `hotfixes`, crea un Pull-Request en Github para la rama, actualiza la descripción del ticket de Youtrack con un link a este Pull-Request y mueve la tarea a **Para Code-Review**.
+| `[...] flow finish <ft/hf>` | Una vez aceptado el Pull-Request en Github, finaliza el desarrollo utilizando Hubflow y mueve la tarea a **Producción** o **Aceptado**, según corresponda.
+| Tipos de desarrollo y formatos de nombramiento | `... ft <RKM-XXXX>`: Para tareas de tipo **Critical**, **Normal** y **Minor**, tomando el ID de la tarea en YouTrack. 
+| | `... hf <X.Y.ISSUE_ID>`: Para tareas de tipo **ShowStopper** y **Blocker**. Se utiliza una forma de Semantic versioning que toma el número de tarea asignado en YouTrack (de la misma forma que para un feature, pero sin RKM).  
  
-*La funcionalidad para `releases` se encuentra en desarrollo*
- 
-#### Para otras acciones
+### Kato
 
-Para las siguientes opciones, tu rama activa deberá comenzar con 'RKM-XXXX':
+Kato es el servicio interno de distribución de bases de datos. Para solicitar una ambiente, debes ejecutar:
+``` console
+# DATE debe ser en el formato YYYY_MM_DD
+$ alfred env new <DATE>
+```
 
-- `alfred task qa`: Cambiará el estado de la tarea a 'Pendiente de QA', cambiará tu rama a 'development' y descargará sus últimos
-cambios.
+Otras acciones con los ambientes son:
+```console
+# Eliminar un ambiente especifico
+$ alfred env del <DATE>
 
-- `alfred task changes`: Cambiará el estado de la tarea a 'CR Cambios Solicitados', cambiará tu rama a 'development' y descargará 
-sus últimos cambios.
+# Revisar un ambiente especifico
+$ alfred env get <DATE>
 
-- `alfred task review`: Cambiará el estado de la tarea a 'En Review'.
+# Obtener el listado de ambientes creados
+$ alfred env list
 
-- `alfred task reject`: Cambiará el estado de la tarea a 'Rechazado', cambiará tu rama a 'development' y descargará 
-sus últimos cambios.
+# Listar las fechas disponibles para solicitar
+$ alfred env images
+
+# Reiniciar un ambiente especifico
+$ alfred env rt <DATE>
+```
+
+La URL del API de Kato y el certificado para trabajo remoto deben ser solicitados al DevOps
 
 ### YouTrack
 
@@ -82,7 +97,7 @@ sus últimos cambios.
 Para obtener una lista de los tickets por resolver puedes usar:
 ``` console
  # Estados: all, pending, progress, cr, changes, qa, accepted o rejected.  
- $ alfred tasks <state>
+ $ alfred issues <state>
 ``` 
 
 #### Revisar un ticket por ID
@@ -90,30 +105,8 @@ Para obtener una lista de los tickets por resolver puedes usar:
 A partir de la ID de un ticket, recibirás información relevante sobre la tarea. Para hacerlo utiliza el comando:
 ``` console
  # La ID puede ser en formato RKM-XXXX o solo XXXX
- $ alfred issue <ID>
+ $ alfred issues <ID>
 ```
-
-### Kato
-
-Kato es el servicio interno de distribución de bases de datos. Para solicitar una ambiente, debes ejecutar:
-``` console
-# DATE debe ser en el formato YYYY_MM_DD
-$ alfred env n <DATE>
-```
-
-Otras acciones con los ambientes son:
-```console
-# Eliminar un ambiente con fecha DATE
-$ alfred env d <DATE>
-
-# Revisar un ambiente especifico
-$ alfred env s <DATE>
-
-# Obtener el listado de ambientes creados
-$ alfred env list
-```
-
-La URL del API de Kato debe ser solicitada al DevOps
 
 
 ### AWS
