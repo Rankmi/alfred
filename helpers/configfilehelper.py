@@ -23,24 +23,6 @@ GH_TOKEN = "Token"
 API_URL = "ApiURL"
 
 
-def reset_credentials(interface):
-    interfaces = {
-        "aws": reset_aws_credentials,
-        "youtrack": reset_youtrack_credentials,
-        "github": reset_github_credentials,
-        "kato": reset_kato_credentials,
-        "all": reset_all_credentials
-    }
-
-    if interface not in list(interfaces.keys()):
-        print_msg(IconsEnum.ERROR,
-                  "Debes ingresar un input válido. Revisa la documentación en https://github.com/Rankmi/alfred.")
-        return False
-
-    reset = interfaces[interface]
-    reset()
-
-
 def reset_aws_credentials():
     key = input("AWS User: ")
     secret = getpass.getpass("AWS Password: ")
