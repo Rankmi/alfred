@@ -73,7 +73,7 @@ $ alfred env new <DATE>
 Otras acciones con los ambientes son:
 ```console
 # Eliminar un ambiente especifico
-$ alfred env del <DATE>
+$ alfred env d <DATE>
 
 # Revisar un ambiente especifico
 $ alfred env get <DATE>
