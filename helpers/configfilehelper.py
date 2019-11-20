@@ -14,6 +14,7 @@ AWS_SECTION = "AWS"
 GITHUB_SECTION = "GITHUB"
 YOUTRACK_SECTION = "YOUTRACK"
 KATO_SECTION = "KATO"
+RELEASER_SECTION = "RELEASER"
 
 USER_KEY = "User"
 PASS_KEY = "Pass"
@@ -53,8 +54,15 @@ def reset_github_credentials():
 def reset_kato_credentials():
     kato_baseurl = input("Kato URL: ")
     if not kato_baseurl:
-        kato_baseurl = "--TODO-- baseurl"
+        kato_baseurl = "http://192.168.1.81:5000"
     set_config_file(AlfredConfig(kato_baseurl=kato_baseurl))
+
+
+def reset_releaser_credentials():
+    releaser_baseurl = input("Releaser URL:")
+    if not releaser_baseurl:
+        releaser_baseurl = "http://192.168.1.81:7000"
+    set_config_file(AlfredConfig(releaser_baseurl=releaser_baseurl))
 
 
 def reset_all_credentials():
@@ -62,6 +70,7 @@ def reset_all_credentials():
     reset_youtrack_credentials()
     reset_github_credentials()
     reset_kato_credentials()
+    reset_releaser_credentials()
 
 
 def config_file_exists():
@@ -91,6 +100,9 @@ def set_config_file(user_config):
     if user_config.kato_baseurl:
         config[KATO_SECTION] = {}
         config[KATO_SECTION][API_URL] = user_config.kato_baseurl
+    if user_config.releaser_baseurl:
+        config[RELEASER_SECTION] = {}
+        config[RELEASER_SECTION][API_URL] = user_config.releaser_baseurl
 
     with open(str(config_location), "w+") as file:
         config.write(file)
