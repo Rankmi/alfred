@@ -9,7 +9,8 @@ class AlfredConfig:
                  github_username=None,
                  github_password=None,
                  github_token=None,
-                 kato_baseurl=None):
+                 kato_baseurl=None,
+                 releaser_baseurl=None):
         self.user = user
         self.password = password
         self.bucket = bucket
@@ -20,3 +21,4 @@ class AlfredConfig:
         self.github_password = github_password
         self.github_token = github_token
         self.kato_baseurl = kato_baseurl
+        self.releaser_baseurl = releaser_baseurl

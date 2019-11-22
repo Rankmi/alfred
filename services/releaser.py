@@ -1,6 +1,9 @@
 import platform
 import subprocess
 
+from helpers.colors import print_msg, IconsEnum
+from helpers.configfilehelper import get_config_key, reset_github_credentials, RELEASER_SECTION, API_URL
+
 
 def release_alfred(version):
     if platform.system() != "Darwin":
@@ -21,3 +24,13 @@ def release_alfred(version):
 
     print("All binaries successfully uploaded.")
     return 201
+
+
+def get_releaser_url():
+    token = get_config_key(RELEASER_SECTION, API_URL)
+    if token:
+        return token
+    else:
+        print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de Github")
+        reset_github_credentials()
+        return get_config_key(RELEASER_SECTION, API_URL)

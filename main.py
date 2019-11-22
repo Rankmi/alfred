@@ -6,6 +6,7 @@ from commands.environments import environment
 from commands.hubflow import hubflow
 from commands.development import development
 from commands.issues import issues
+from commands.release import release
 from commands.reset import reset
 from services.githubservice import update_binary
 
@@ -27,6 +28,7 @@ greet.add_command(development)
 greet.add_command(environment)
 greet.add_command(hubflow)
 greet.add_command(issues)
+greet.add_command(release)
 greet.add_command(reset)
 
 if __name__ == '__main__':
