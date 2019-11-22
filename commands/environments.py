@@ -52,5 +52,6 @@ def delete_env(date: str):
 
 
 @environment.command(name='rt', help='Restarts the environment for the given date (YYYY_MM_DD)')
+@click.argument('date')
 def restart_env(date: str):
     restart_environment(date)
