@@ -1,8 +1,28 @@
 import platform
 import subprocess
 
+from data.Releaser import ReleaseRankmiResponse, ReleaseProjectResponse
 from helpers.colors import print_msg, IconsEnum
 from helpers.configfilehelper import get_config_key, reset_github_credentials, RELEASER_SECTION, API_URL
+
+
+def rel_rankmi_response(response: ReleaseRankmiResponse):
+    if response.ok:
+        print_msg(IconsEnum.UNICORN, "Release realizado correctamente")
+    elif not response.ok:
+        print_msg(IconsEnum.ERROR, "Hubo un error realizando el Release")
+        print_msg(IconsEnum.INFO, response.status)
+    print_msg(IconsEnum.INFO, response.api_message)
+    print_msg(IconsEnum.INFO, response.app_message)
+
+
+def rel_project_response(response: ReleaseProjectResponse):
+    if response.ok:
+        print_msg(IconsEnum.UNICORN, "Release realizado correctamente")
+    elif not response.ok:
+        print_msg(IconsEnum.ERROR, "Hubo un error realizando el Release")
+        print_msg(IconsEnum.INFO, response.status)
+    print_msg(IconsEnum.INFO, response.message)
 
 
 def release_alfred(version):
@@ -27,9 +47,9 @@ def release_alfred(version):
 
 
 def get_releaser_url():
-    token = get_config_key(RELEASER_SECTION, API_URL)
-    if token:
-        return token
+    url = get_config_key(RELEASER_SECTION, API_URL)
+    if url:
+        return url
     else:
         print_msg(IconsEnum.ERROR, "No has ingresado tus credenciales de Github")
         reset_github_credentials()
