@@ -24,7 +24,7 @@ case ${machine} in
 
         echo "Releasing binary for Mac systems."
         ./generator.sh ins gen
-        alfred dev release --new
+        ./dist/alfred dev release --new
 
         echo "Releasing binary for Linux systems."
         docker build -t alfredock:"$1";;
