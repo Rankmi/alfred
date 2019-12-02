@@ -21,6 +21,10 @@ Para acceder a **alfred** desde cualquier directorio, debes posicionarlo en `/us
 ``` console
 $ mv /path/to/alfred-for-<os> /usr/local/bin/alfred
 ```
+Luego debes darle los permisos necesarios para que pueda ser ejecutable: 
+``` console
+sudo chmod 755 /usr/local/bin/alfred
+```
 
 Puedes comprobar la instalación revisando la versión de alfred con
 ``` console
