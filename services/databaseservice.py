@@ -49,9 +49,12 @@ def create_environment(date):
     elif request.status_code == HTTPStatus.NOT_FOUND:
         print_msg(IconsEnum.ERROR, "La imagen para el día indicado no existe.")
         return request.status_code
+    elif request.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
+        print_msg(IconsEnum.ERROR, "La solicitud de ambientes se encuentra deshabilitada.")
+        exit()
     else:
         print_msg(IconsEnum.ERROR, "Hubo un error realizando la solicitud")
-        return request.status_code
+        exit()
 
 
 def delete_environment(date):
